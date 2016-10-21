@@ -1,5 +1,13 @@
 package com.example.leehyungyu.bnwgameclient.service;
 
+import com.example.leehyungyu.bnwgameclient.service.callback.JsonResponseCallback;
+import com.example.leehyungyu.bnwgameclient.service.callback.ResponseCallback;
+import com.example.leehyungyu.bnwgameclient.utils.JsonUtils;
+
+import org.json.JSONException;
+
+import java.io.IOException;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
@@ -11,7 +19,7 @@ public abstract class Service {
     OkHttpClient client = new OkHttpClient();
 
     Response response;
-    ResponseEventListener responseEventListener;
+    ResponseCallback responseCallback;
     protected abstract Response execute(Object...param);
 
     public OkHttpClient getClient() {
@@ -23,8 +31,12 @@ public abstract class Service {
             @Override
             public void run() {
                 response = execute(param);
-                responseEventListener.onResponse(response);
-            }
+                if(response!=null)
+                {
+                    runSuccessCallback(response);
+                }
+
+             }
         }).start();
     }
 
@@ -36,7 +48,41 @@ public abstract class Service {
         return response;
     }
 
-    public void setOnResponse(ResponseEventListener responseEventListener) {
-        this.responseEventListener = responseEventListener;
+    public void setOnResponse(ResponseCallback responseCallback) {
+        this.responseCallback = responseCallback;
     }
+
+    public String extractBodyFromResponse(Response response) {
+        String body = null;
+        try
+        {
+            body = response.body().string();
+        }
+        catch (IOException e)
+        {
+            return null;
+        }
+        return body;
+    }
+
+    public void runSuccessCallback(Response response) {
+        if(responseCallback instanceof JsonResponseCallback)
+        {
+            String responseJson = extractBodyFromResponse(response);
+            try
+            {
+                ((JsonResponseCallback) responseCallback).onJsonResponse(JsonUtils.parseJsonObject(responseJson));
+            }
+            catch(JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        else
+        {
+            responseCallback.onResponse(response);
+        }
+    }
+
+
 }

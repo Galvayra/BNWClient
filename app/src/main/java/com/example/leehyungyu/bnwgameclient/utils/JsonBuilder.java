@@ -9,17 +9,21 @@ import org.json.JSONObject;
 
 public class JsonBuilder {
 
-    private static String[] keys;
-    private static Object[] values;
-    public static void addKeys(String..._keys) {
+    private String[] keys;
+    private Object[] values;
+    private JSONObject obj;
+
+    public JsonBuilder addKeys(String..._keys) {
         keys = _keys;
+        return this;
     }
 
-    public static void addValues(Object..._values) {
+    public JsonBuilder addValues(Object..._values) {
         values = _values;
+        return this;
     }
 
-    public static JSONObject build() {
+    public JSONObject build() {
         JSONObject obj = new JSONObject();
         for(int i = 0; i<keys.length; i++)
         {
@@ -35,4 +39,7 @@ public class JsonBuilder {
         return obj;
     }
 
+    public String toJsonString() {
+        return build().toString();
+    }
 }

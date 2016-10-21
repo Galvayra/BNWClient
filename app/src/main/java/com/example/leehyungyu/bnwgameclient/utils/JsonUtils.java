@@ -33,4 +33,35 @@ public class JsonUtils {
 
         return t;
     }
+
+    public static JSONObject parseJsonObject(String str) {
+        JSONObject obj = null;
+        try
+        {
+            obj = new JSONObject(str);
+        }
+        catch (JSONException e)
+        {
+            return null;
+        }
+        return obj;
+    }
+
+    public static Object get(JSONObject obj, String key) {
+
+        Object value = null;
+
+        try
+        {
+            value = obj.get(key);
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+
+        return value;
+    }
+
 }
