@@ -1,88 +1,57 @@
 package com.example.leehyungyu.bnwgameclient.service;
 
-import com.example.leehyungyu.bnwgameclient.service.callback.JsonResponseCallback;
-import com.example.leehyungyu.bnwgameclient.service.callback.ResponseCallback;
-import com.example.leehyungyu.bnwgameclient.utils.JsonUtils;
-
-import org.json.JSONException;
-
 import java.io.IOException;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
-import okhttp3.Response;
+import okhttp3.Request;
 
 /**
  * Created by leehyungyu on 2016-10-17.
  */
 
 public abstract class Service {
-    OkHttpClient client = new OkHttpClient();
 
-    Response response;
-    ResponseCallback responseCallback;
-    protected abstract Response execute(Object...param);
+    private OkHttpClient client = new OkHttpClient();
+    private Callback callback;
 
-    public OkHttpClient getClient() {
-        return client;
-    }
+    private boolean callbackHooking = false;
+
+    protected abstract Request buildRequest(Object...param);
 
     public void runOnBackground(final Object...param) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                response = execute(param);
-                if(response!=null)
+                Request request = buildRequest(param);
+
+                Call call = client.newCall(request);
+
+                if(callbackHooking)
                 {
-                    runSuccessCallback(response);
+                    call.enqueue(callback);
+                }
+                else
+                {
+                    try
+                    {
+                        call.execute();
+                    }
+                    catch(IOException e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
 
-             }
+            }
         }).start();
     }
 
-    public void setResponse(Response response) {
-        this.response = response;
+    public void useCallback(Callback callback)
+    {
+        this.callback = callback;
+        callbackHooking = true;
     }
-
-    public Response getResponse() {
-        return response;
-    }
-
-    public void setOnResponse(ResponseCallback responseCallback) {
-        this.responseCallback = responseCallback;
-    }
-
-    public String extractBodyFromResponse(Response response) {
-        String body = null;
-        try
-        {
-            body = response.body().string();
-        }
-        catch (IOException e)
-        {
-            return null;
-        }
-        return body;
-    }
-
-    public void runSuccessCallback(Response response) {
-        if(responseCallback instanceof JsonResponseCallback)
-        {
-            String responseJson = extractBodyFromResponse(response);
-            try
-            {
-                ((JsonResponseCallback) responseCallback).onJsonResponse(JsonUtils.parseJsonObject(responseJson));
-            }
-            catch(JSONException e)
-            {
-                e.printStackTrace();
-            }
-        }
-        else
-        {
-            responseCallback.onResponse(response);
-        }
-    }
-
 
 }

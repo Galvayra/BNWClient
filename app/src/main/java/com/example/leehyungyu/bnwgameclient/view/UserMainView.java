@@ -2,7 +2,6 @@ package com.example.leehyungyu.bnwgameclient.view;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import com.example.leehyungyu.bnwgameclient.R;
 
