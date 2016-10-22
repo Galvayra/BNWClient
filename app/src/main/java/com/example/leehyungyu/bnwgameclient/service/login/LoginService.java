@@ -4,6 +4,7 @@ import com.example.leehyungyu.bnwgameclient.service.ServerConfiguration;
 import com.example.leehyungyu.bnwgameclient.service.Service;
 import com.example.leehyungyu.bnwgameclient.utils.JsonBuilder;
 
+import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;

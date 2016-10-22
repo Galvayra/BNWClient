@@ -1,17 +1,19 @@
 package com.example.leehyungyu.bnwgameclient.view;
 
- import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.leehyungyu.bnwgameclient.R;
- import com.example.leehyungyu.bnwgameclient.service.login.LoginService;
- import com.example.leehyungyu.bnwgameclient.utils.GuiUtils;
+import com.example.leehyungyu.bnwgameclient.service.login.LoginService;
+import com.example.leehyungyu.bnwgameclient.utils.GuiUtils;
 
 public class MainView extends AppCompatActivity {
 
-    Button loginBtn, registBtn;
+    Button loginBtn;
+    TextView register;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +22,6 @@ public class MainView extends AppCompatActivity {
         GuiUtils.setContext(this);
 
         loginBtn = (Button) findViewById(R.id.loginBtn);
-        registBtn = (Button) findViewById(R.id.registBtn);
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,11 +34,12 @@ public class MainView extends AppCompatActivity {
             }
         });
 
-        registBtn.setOnClickListener(new View.OnClickListener() {
+        register = GuiUtils.getView(R.id.register, TextView.class);
+        register.setText(R.string.link_for_register);
+        register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
+                GuiUtils.showToast("회원가입화면으로 이동");
             }
         });
     }

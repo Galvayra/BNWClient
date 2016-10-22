@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BNWGameClient</string>
+    <string name="link_for_register"><u>ID가 없으세요? 클릭하세요!</u></string>
 </resources>

@@ -1,5 +1,7 @@
 package com.example.leehyungyu.bnwgameclient.service;
 
+import com.example.leehyungyu.bnwgameclient.utils.GuiUtils;
+
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -13,7 +15,6 @@ import okhttp3.Request;
 
 public abstract class Service {
 
-    private OkHttpClient client = new OkHttpClient();
     private Callback callback;
 
     private boolean callbackHooking = false;
@@ -26,7 +27,7 @@ public abstract class Service {
             public void run() {
                 Request request = buildRequest(param);
 
-                Call call = client.newCall(request);
+                Call call = SingletonHttpClient.getInstance().newCall(request);
 
                 if(callbackHooking)
                 {

@@ -1,5 +1,6 @@
 package com.example.leehyungyu.bnwgameclient.service.login;
 
+import com.example.leehyungyu.bnwgameclient.utils.Extras;
 import com.example.leehyungyu.bnwgameclient.utils.GuiUtils;
 import com.example.leehyungyu.bnwgameclient.utils.JsonUtils;
 import com.example.leehyungyu.bnwgameclient.view.UserMainView;
@@ -30,7 +31,7 @@ public class LoginCallback implements Callback {
         Login result = Login.valueOf(JsonUtils.get(obj,"result").toString());
         if(result==Login.OK)
         {
-            GuiUtils.changeActivity(UserMainView.class);
+            GuiUtils.changeActivity(UserMainView.class, new Extras().addExtra("id", JsonUtils.get(obj,"id")));
         }
         else if(result==Login.AUTH_FAIL)
         {

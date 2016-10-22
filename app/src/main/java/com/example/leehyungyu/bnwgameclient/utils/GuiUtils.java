@@ -8,6 +8,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Set;
+
 /**
  * Created by leehyungyu on 2016-10-17.
  */
@@ -29,12 +31,22 @@ public class GuiUtils {
         });
     }
 
-    public static void changeActivity(final Class<?> clazz, Object...param) {
+    public static void changeActivity(final Class<?> clazz, final Extras extras) {
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 Intent intent = new Intent();
                 intent.setClass(context, clazz);
+
+                if(extras!=null)
+                {
+                    Set<String> keys = extras.getExtras().keySet();
+                    for(String key : keys)
+                    {
+                        intent.putExtra(key, extras.getExtras().get(key).toString());
+                    }
+                }
+
                 context.startActivity(intent);
             }
         });
@@ -56,6 +68,10 @@ public class GuiUtils {
             return ((TextView)view).getText().toString();
         }
         return null;
+    }
+
+    public static Activity getContext() {
+        return context;
     }
 
 }
