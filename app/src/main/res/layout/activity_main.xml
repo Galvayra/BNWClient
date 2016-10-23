@@ -81,4 +81,16 @@
         android:textColor="@color/colorPrimary"
         android:textAllCaps="false" />
 
+    <CheckBox
+        android:text="자동로그인"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/auto_login_usable"
+        android:layout_alignBaseline="@+id/loginBtn"
+        android:layout_alignBottom="@+id/loginBtn"
+        android:layout_alignRight="@+id/register"
+        android:layout_alignEnd="@+id/register"
+        android:layout_marginRight="11dp"
+        android:layout_marginEnd="11dp" />
+
 </RelativeLayout>

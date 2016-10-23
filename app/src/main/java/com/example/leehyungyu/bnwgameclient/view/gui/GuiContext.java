@@ -1,28 +1,45 @@
-package com.example.leehyungyu.bnwgameclient.utils;
+package com.example.leehyungyu.bnwgameclient.view.gui;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.leehyungyu.bnwgameclient.utils.Extras;
+
+import java.util.HashMap;
 import java.util.Set;
 
 /**
  * Created by leehyungyu on 2016-10-17.
  */
 
-public class GuiUtils {
+public class GuiContext {
 
-    private static Activity context;
+    private Activity context;
 
-    public static void setContext(Activity _context) {
-        context = _context;
+    private HashMap<String, View> views;
+
+    public GuiContext(Activity context) {
+        this.context = context;
+        this.views = new HashMap<>();
     }
 
-    public static void showToast(final String msg) {
+    public void registView(String key, View view) {
+        views.put(key, view);
+    }
+
+    public <T> T getView(String key, Class<T> clazz) {
+        return (T)views.get(key);
+    }
+
+    public void setContext(Activity context) {
+        this.context = context;
+    }
+
+    public void showToast(final String msg) {
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -31,7 +48,7 @@ public class GuiUtils {
         });
     }
 
-    public static void changeActivity(final Class<?> clazz, final Extras extras) {
+    public void changeActivity(final Class<?> clazz, final Extras extras) {
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -52,11 +69,15 @@ public class GuiUtils {
         });
     }
 
-    public static <T> T getView(int id, Class<T> clazz) {
+    public View getView(int id) {
+        return context.findViewById(id);
+    }
+
+    public <T> T getView(int id, Class<T> clazz) {
         return (T)context.findViewById(id);
     }
 
-    public static String getTextFromView(int id) {
+    public String getTextFromView(int id) {
         View view = context.findViewById(id);
 
         if(view instanceof EditText)
@@ -70,8 +91,12 @@ public class GuiUtils {
         return null;
     }
 
-    public static Activity getContext() {
+    public Activity getContext() {
         return context;
+    }
+
+    public void click(int id, View.OnClickListener r) {
+        context.findViewById(id).setOnClickListener(r);
     }
 
 }

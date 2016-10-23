@@ -1,12 +1,8 @@
 package com.example.leehyungyu.bnwgameclient.service;
 
-import com.example.leehyungyu.bnwgameclient.utils.GuiUtils;
+import com.example.leehyungyu.bnwgameclient.view.gui.GuiContext;
 
-import java.io.IOException;
-
-import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
 /**
@@ -15,11 +11,21 @@ import okhttp3.Request;
 
 public abstract class Service {
 
-    private Callback callback;
-
-    private boolean callbackHooking = false;
-
     protected abstract Request buildRequest(Object...param);
+    protected abstract Callback buildCallback(Object...param);
+    private GuiContext guiContext;
+
+    public Service(GuiContext guiContext) {
+        this.guiContext = guiContext;
+    }
+
+    public void setGuiContext(GuiContext guiContext) {
+        this.guiContext = guiContext;
+    }
+
+    public GuiContext getGuiContext() {
+        return guiContext;
+    }
 
     public void runOnBackground(final Object...param) {
         new Thread(new Runnable() {
@@ -27,32 +33,14 @@ public abstract class Service {
             public void run() {
                 Request request = buildRequest(param);
 
-                Call call = SingletonHttpClient.getInstance().newCall(request);
+                Callback callback = buildCallback(param);
 
-                if(callbackHooking)
+                if(callback!=null)
                 {
-                    call.enqueue(callback);
-                }
-                else
-                {
-                    try
-                    {
-                        call.execute();
-                    }
-                    catch(IOException e)
-                    {
-                        e.printStackTrace();
-                    }
+                    SingletonHttpClient.getInstance().newCall(request).enqueue(callback);
                 }
 
             }
         }).start();
     }
-
-    public void useCallback(Callback callback)
-    {
-        this.callback = callback;
-        callbackHooking = true;
-    }
-
 }

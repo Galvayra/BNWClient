@@ -1,49 +1,62 @@
 package com.example.leehyungyu.bnwgameclient.view;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.example.leehyungyu.bnwgameclient.R;
 import com.example.leehyungyu.bnwgameclient.service.login.LoginService;
-import com.example.leehyungyu.bnwgameclient.utils.GuiUtils;
+import com.example.leehyungyu.bnwgameclient.view.gui.GuiContext;
 
 public class MainView extends AppCompatActivity {
 
-    Button loginBtn;
-    TextView register;
+    private GuiContext gtx;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        GuiUtils.setContext(this);
+        gtx = new GuiContext(this);
 
-        loginBtn = (Button) findViewById(R.id.loginBtn);
+        checkAutoLogin();
 
-        loginBtn.setOnClickListener(new View.OnClickListener() {
+        gtx.click(R.id.loginBtn, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String id = GuiUtils.getTextFromView(R.id.idField);
-                String password = GuiUtils.getTextFromView(R.id.pwField);
-
-                LoginService loginService = new LoginService();
-                loginService.runOnBackground(id, password);
+                String id = gtx.getTextFromView(R.id.idField);
+                String password = gtx.getTextFromView(R.id.pwField);
+                new LoginService(gtx).runOnBackground(id, password);
             }
         });
 
-        register = GuiUtils.getView(R.id.register, TextView.class);
-        register.setText(R.string.link_for_register);
-        register.setOnClickListener(new View.OnClickListener() {
+        gtx.click(R.id.register, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GuiUtils.showToast("회원가입화면으로 이동");
+                gtx.showToast("회원가입 화면으로 이동");
             }
         });
     }
 
-
+    public void checkAutoLogin() {
+        SharedPreferences prefs = getSharedPreferences("bnw-pref", MODE_PRIVATE);
+        if(prefs!=null)
+        {
+            if(prefs.getBoolean("auto-login", false))
+            {
+                String id = prefs.getString("id","");
+                String password = prefs.getString("password","");
+                new LoginService(gtx).runOnBackground(id, password);
+            }
+            else
+            {
+                gtx.showToast("자동 로그인 설정된 것 없음");
+            }
+        }
+        else
+        {
+            gtx.showToast("설정된 preference 없음");
+        }
+    }
 
 }

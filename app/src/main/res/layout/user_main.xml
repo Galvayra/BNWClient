@@ -14,7 +14,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/contextView_my_page"
-            android:background="@color/colorPrimary"
             android:visibility="invisible">
 
             <TextView
@@ -42,6 +41,18 @@
                 android:layout_marginLeft="57dp"
                 android:layout_marginStart="57dp"
                 android:layout_marginTop="170dp" />
+
+            <Switch
+                android:text="자동로그인"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/auto_login"
+                android:layout_marginRight="22dp"
+                android:layout_marginEnd="22dp"
+                android:layout_marginTop="136dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
 
             <TextView
                 android:text="TextView"
@@ -113,6 +124,23 @@
             android:id="@+id/contextView_second"
             android:background="@color/colorPrimaryDark"
             android:visibility="invisible">
+
+            <Button
+                android:text="방생성"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/createRoomBtn"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="21dp"
+                android:layout_marginEnd="21dp"
+                android:layout_marginBottom="29dp" />
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/roomList" />
         </RelativeLayout>
 
         <RelativeLayout
