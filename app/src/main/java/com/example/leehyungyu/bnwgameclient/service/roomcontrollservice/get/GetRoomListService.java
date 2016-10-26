@@ -14,6 +14,7 @@ import com.example.leehyungyu.bnwgameclient.service.ServerConfiguration;
 import com.example.leehyungyu.bnwgameclient.service.Service;
 import static com.example.leehyungyu.bnwgameclient.utils.JsonUtils.*;
 
+import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.enter.EnterRoomService;
 import com.example.leehyungyu.bnwgameclient.view.gui.GuiContext;
 
 import org.json.JSONArray;
@@ -35,8 +36,8 @@ import okhttp3.Response;
 
 public class GetRoomListService extends Service {
 
-    public GetRoomListService(GuiContext gtx) {
-        super(gtx);
+    public GetRoomListService(GuiContext gtx, String serviceOwner) {
+        super(gtx, serviceOwner);
         final ProgressDialog pDlg = gtx.getView(gtx.findString(R.string.loadgin_dialog),ProgressDialog.class);
         if(pDlg==null)
         {
@@ -79,7 +80,7 @@ public class GetRoomListService extends Service {
                     getGuiContext().setListItemClick(R.id.roomList, new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            getGuiContext().showToast("");
+                            new EnterRoomService(getGuiContext(), getServiceOwner()).runOnBackground(((TextView)view.findViewById(R.id.room_no)).getText().toString());
                         }
                     });
 
@@ -93,7 +94,7 @@ public class GetRoomListService extends Service {
                     if(manager.getService(R.string.refresher_service)==null||!manager.getService(R.string.refresher_service).isAlive())
                     {
                         Log.e("service", "새로고침 스레드 활성화");
-                        manager.registService(R.string.refresher_service, new Refresher(getGuiContext(), 15000));
+                        manager.registService(R.string.refresher_service, new Refresher(getGuiContext(), 15000, getServiceOwner()));
                         manager.getService(R.string.refresher_service).start();
                     }
                 }

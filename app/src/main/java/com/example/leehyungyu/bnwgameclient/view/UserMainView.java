@@ -52,12 +52,12 @@ public class UserMainView extends AppCompatActivity {
                 {
                     case 0 :
                         /* myPage 정보 요청 서비스 */
-                        new MyPageService(gtx).runOnBackground(userId);
+                        new MyPageService(gtx, userId).runOnBackground(userId);
                         gtx.show(R.id.contextView_my_page);
                         break;
                     case 1 :
                         /* 방목록 요청 서비스 */
-                        new GetRoomListService(gtx).runOnBackground();
+                        new GetRoomListService(gtx, userId).runOnBackground(userId);
                         gtx.show(R.id.contextView_second);
                         break;
                     case 2 :
@@ -71,7 +71,7 @@ public class UserMainView extends AppCompatActivity {
         gtx.click(R.id.refresh, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new GetRoomListService(gtx).runOnBackground();
+                new GetRoomListService(gtx, userId).runOnBackground();
             }
         });
 
@@ -88,7 +88,7 @@ public class UserMainView extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String title = input.getText().toString();
-                        new CreateRoomService(gtx).runOnBackground(userId, title);
+                        new CreateRoomService(gtx, userId).runOnBackground(userId, title);
                         dialog.dismiss();
                     }
                 });

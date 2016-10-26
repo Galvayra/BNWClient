@@ -22,9 +22,7 @@ import java.util.Date;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MediaType;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -35,16 +33,14 @@ public class MyPageService extends Service {
 
     SharedPreferences pref = getGuiContext().getContext().getSharedPreferences("bnw-pref", Context.MODE_PRIVATE);
 
-    public MyPageService(GuiContext guiContext) {
-        super(guiContext);
+    public MyPageService(GuiContext guiContext, String serviceOwner) {
+        super(guiContext, serviceOwner);
     }
 
     @Override
     protected Request buildRequest(Object... param) {
-        JSONObject jo = new JsonBuilder().addKeys("id").addValues(param[0]).build();
-        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jo.toString());
-        Request request = new Request.Builder().post(body).url(ServerConfiguration.MYPAGE_VIEW_REQUEST+"/"+param[0]).build();
-        return request;
+        JsonBuilder jo = new JsonBuilder().addKeys("id").addValues(param[0]);
+        return new Request.Builder().post(jsonRequestBody(jo.toString())).url(ServerConfiguration.MYPAGE_VIEW_REQUEST+"/"+param[0]).build();
     }
 
     @Override

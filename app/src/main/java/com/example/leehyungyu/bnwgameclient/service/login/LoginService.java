@@ -32,8 +32,8 @@ import okhttp3.Response;
 
 public class LoginService extends Service {
 
-    public LoginService(GuiContext gtx) {
-        super(gtx);
+    public LoginService(GuiContext gtx, String serviceOwner) {
+        super(gtx, serviceOwner);
         ProgressDialog pDlg = ProgressDialog.show(gtx.getContext(), "", "로그인 중입니다.", true);
         gtx.registView(gtx.findString(R.string.login_dialog), pDlg);
     }
@@ -41,11 +41,8 @@ public class LoginService extends Service {
     @Override
     protected Request buildRequest(Object... param) {
 
-        JsonBuilder jb = new JsonBuilder();
-        jb.addKeys("id","password").addValues(param[0], param[1]);
-
-        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jb.toJsonString());
-        Request request = new Request.Builder().url(ServerConfiguration.LOGIN_REQUEST_URI).post(body).build();
+        JsonBuilder jb = new JsonBuilder().addKeys("id","password").addValues(param[0], param[1]);
+        Request request = new Request.Builder().url(ServerConfiguration.LOGIN_REQUEST_URI).post(jsonRequestBody(jb.toJsonString())).build();
 
         return request;
     }

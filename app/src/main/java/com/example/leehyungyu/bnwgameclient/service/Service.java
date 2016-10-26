@@ -3,7 +3,9 @@ package com.example.leehyungyu.bnwgameclient.service;
 import com.example.leehyungyu.bnwgameclient.view.gui.GuiContext;
 
 import okhttp3.Callback;
+import okhttp3.MediaType;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 
 /**
  * Created by leehyungyu on 2016-10-17.
@@ -13,10 +15,13 @@ public abstract class Service {
 
     protected abstract Request buildRequest(Object...param);
     protected abstract Callback buildCallback();
-    private GuiContext guiContext;
 
-    public Service(GuiContext guiContext) {
+    private GuiContext guiContext;
+    private String serviceOwner;
+
+    public Service(GuiContext guiContext, String serviceOwner) {
         this.guiContext = guiContext;
+        this.serviceOwner = serviceOwner;
     }
 
     public void setGuiContext(GuiContext guiContext) {
@@ -41,5 +46,13 @@ public abstract class Service {
                 }
             }
         }).start();
+    }
+
+    public RequestBody jsonRequestBody(String json) {
+        return RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+    }
+
+    public String getServiceOwner() {
+        return serviceOwner;
     }
 }

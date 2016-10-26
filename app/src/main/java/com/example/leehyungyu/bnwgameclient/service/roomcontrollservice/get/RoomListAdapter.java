@@ -1,6 +1,7 @@
 package com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.get;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,8 +37,7 @@ public class RoomListAdapter extends BaseAdapter {
             itemData.setRoomTitle(get(obj,"room_title").toString());
             itemData.setRoomCreator(get(obj, "creator").toString());
             itemData.setRoomState(RoomState.valueOf((int)get(obj, "room_state")).toString());
-            Object participant = get(obj, "participant");
-            if(participant==null)
+            if((int)get(obj, "room_state")==RoomState.WAIT.getValue())
             {
                 itemData.setNumOfPart("1 / 2");
             }
@@ -102,7 +102,11 @@ public class RoomListAdapter extends BaseAdapter {
 
         if(itemData.getRoomState().equals(RoomState.WAIT.toString()))
         {
-//            convertView.setBackgroundColor(Color.GREEN);
+            item.getRoomState().setTextColor(Color.GREEN);
+        }
+        else if(itemData.getRoomState().equals(RoomState.FULL.toString()))
+        {
+            item.getRoomState().setTextColor(Color.RED);
         }
 
         return convertView;

@@ -12,10 +12,11 @@ public class Refresher extends Thread {
 
     private GuiContext context;
     private long gap = 2000;
-
-    public Refresher(GuiContext context, long gap) {
+    private String owner;
+    public Refresher(GuiContext context, long gap, String owner) {
         this.context = context;
         this.gap = gap;
+        this.owner = owner;
     }
 
     public void setGap(long gap) {
@@ -32,7 +33,7 @@ public class Refresher extends Thread {
                 {
                     this.wait(gap);
                     Log.e("service","방 목록 새로고침");
-                    new GetRoomListService(context).runOnBackground();
+                    new GetRoomListService(context, owner).runOnBackground(owner);
                 }
                 catch(InterruptedException e)
                 {

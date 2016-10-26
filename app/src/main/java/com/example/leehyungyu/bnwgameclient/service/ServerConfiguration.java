@@ -11,5 +11,6 @@ public class ServerConfiguration {
     public static final String MYPAGE_VIEW_REQUEST = HOST+"mobile/mypage";
     public static final String GET_GAME_ROOM_REQUEST = HOST+"mobile/room";
     public static final String CREATE_GAME_ROOM_REQUEST = HOST+"mobile/createroom";
+    public static final String ENTER_GAME_ROOM_REQUEST = HOST+"mobile/enterroom";
 
 }

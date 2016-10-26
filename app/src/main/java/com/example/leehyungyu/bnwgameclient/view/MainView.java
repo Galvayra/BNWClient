@@ -30,14 +30,14 @@ public class MainView extends AppCompatActivity {
     }
 
     public void guiInit() {
+        final String id = gtx.getTextFromView(R.id.idField);
         gtx.click(R.id.loginBtn, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final LoginService loginService = new LoginService(gtx);
+                final LoginService loginService = new LoginService(gtx, id);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        String id = gtx.getTextFromView(R.id.idField);
                         String password = gtx.getTextFromView(R.id.pwField);
                         loginService.runOnBackground(id, password);
                     }
@@ -60,11 +60,11 @@ public class MainView extends AppCompatActivity {
         {
             if(prefs.getBoolean("auto-login", false))
             {
-                final LoginService loginService = new LoginService(gtx);
+                final String id = prefs.getString("id","");
+                final LoginService loginService = new LoginService(gtx, id);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        String id = prefs.getString("id","");
                         String password = prefs.getString("password","");
                         loginService.runOnBackground(id, password);
                     }

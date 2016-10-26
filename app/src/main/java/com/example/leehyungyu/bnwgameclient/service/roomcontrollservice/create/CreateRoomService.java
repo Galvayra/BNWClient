@@ -27,20 +27,14 @@ import okhttp3.Response;
 
 public class CreateRoomService extends Service {
 
-    private String id;
-
-    public CreateRoomService(GuiContext context) {
-        super(context);
+    public CreateRoomService(GuiContext context, String serviceOwner) {
+        super(context, serviceOwner);
     }
 
     @Override
     protected Request buildRequest(Object... param) {
-        id = param[0].toString();
-        JsonBuilder builder = new JsonBuilder().addKeys("id", "title").addValues(param[0], param[1]);
-        Log.e("createRoom", builder.toJsonString());
-        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), builder.toJsonString());
-        Request request = new Request.Builder().post(body).url(ServerConfiguration.CREATE_GAME_ROOM_REQUEST).build();
-        return request;
+        JsonBuilder builder = new JsonBuilder().addKeys("id", "title").addValues(getServiceOwner(), param[1]);
+        return new Request.Builder().post(jsonRequestBody(builder.toJsonString())).url(ServerConfiguration.CREATE_GAME_ROOM_REQUEST).build();
     }
 
     @Override
@@ -59,8 +53,8 @@ public class CreateRoomService extends Service {
                 {
                     JSONObject jo = JsonUtils.parseJsonObject(json);
                     getGuiContext().changeActivity(InRoomView.class, new Extras()
-                            .addExtra("creator",JsonUtils.get(jo,"creator"))
-                            .addExtra("id", id)
+                            .addExtra("creator", JsonUtils.get(jo,"creator"))
+                            .addExtra("id", getServiceOwner())
                             .addExtra("roomTitle", JsonUtils.get(jo,"roomTitle"))
                             .addExtra("roomNo", JsonUtils.get(jo,"roomNo")+""));
 
