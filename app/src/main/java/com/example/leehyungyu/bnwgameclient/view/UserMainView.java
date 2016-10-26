@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import com.example.leehyungyu.bnwgameclient.R;
 import com.example.leehyungyu.bnwgameclient.service.mypageservice.MyPageService;
+import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.create.CreateRoomService;
 import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.get.GetRoomListService;
 import com.example.leehyungyu.bnwgameclient.view.gui.ChangableGuiContext;
 
@@ -23,11 +24,12 @@ public class UserMainView extends AppCompatActivity {
 
     private ListView drawer;
     private ChangableGuiContext gtx;
-    private final String userId = getIntent().getStringExtra("id");
+    private String userId;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_main);
+        userId = getIntent().getStringExtra("id");
         guiInit();
         gtx.showToast("환영합니다. "+userId+"으로 접속하셨습니다.");
     }
@@ -77,7 +79,7 @@ public class UserMainView extends AppCompatActivity {
         gtx.click(R.id.createRoomBtn, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(gtx.getContext());
+                final AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(gtx.getContext());
                 dlgBuilder.setTitle("새로운 방 만들기");
                 dlgBuilder.setMessage("방 제목을 입력하세요");
                 final EditText input = new EditText(gtx.getContext());
@@ -86,9 +88,17 @@ public class UserMainView extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String title = input.getText().toString();
-
+                        new CreateRoomService(gtx).runOnBackground(userId, title);
+                        dialog.dismiss();
                     }
                 });
+                dlgBuilder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dlgBuilder.show();
             }
         });
     }
@@ -96,7 +106,7 @@ public class UserMainView extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        Thread service = gtx.getServiceManager().getService("refresher");
+        Thread service = gtx.getServiceManager().getService(R.string.refresher_service);
         if(service!=null)
         {
             service.interrupt();

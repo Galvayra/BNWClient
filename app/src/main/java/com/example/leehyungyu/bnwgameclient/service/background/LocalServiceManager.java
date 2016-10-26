@@ -8,17 +8,17 @@ import java.util.HashMap;
 
 public class LocalServiceManager {
 
-    private HashMap<String, Thread> services;
+    private HashMap<Integer, Thread> services;
 
     public LocalServiceManager() {
         services = new HashMap<>();
     }
 
-    public void registService(String name, Thread thread) {
+    public void registService(int name, Thread thread) {
         services.put(name, thread);
     }
 
-    public Thread getService(String name) {
+    public Thread getService(int name) {
         return services.get(name);
     }
 

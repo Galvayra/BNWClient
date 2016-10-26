@@ -35,7 +35,7 @@ public class LoginService extends Service {
     public LoginService(GuiContext gtx) {
         super(gtx);
         ProgressDialog pDlg = ProgressDialog.show(gtx.getContext(), "", "로그인 중입니다.", true);
-        gtx.registView("login-dlg", pDlg);
+        gtx.registView(gtx.findString(R.string.login_dialog), pDlg);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class LoginService extends Service {
         return new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                final ProgressDialog pDlg = getGuiContext().getView("login-dlg", ProgressDialog.class);
+                final ProgressDialog pDlg = getGuiContext().getView(getGuiContext().findString(R.string.login_dialog), ProgressDialog.class);
                 if(pDlg!=null) {
                     getGuiContext().getContext().runOnUiThread(new Runnable() {
                         @Override
@@ -81,22 +81,20 @@ public class LoginService extends Service {
                     getGuiContext().getContext().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            getGuiContext().getView("login-dlg", ProgressDialog.class).dismiss();
+                            getGuiContext().getView(getGuiContext().findString(R.string.login_dialog), ProgressDialog.class).dismiss();
                             getGuiContext().changeActivity(UserMainView.class, new Extras().addExtra("id", JsonUtils.get(obj,"id")));
                         }
                     });
                 }
                 else if(result==Login.AUTH_FAIL)
                 {
-                    getGuiContext().getView("login-dlg", ProgressDialog.class).dismiss();
                     getGuiContext().showToast("비밀번호를 확인하세요.");
                 }
                 else if(result==Login.ID_NOT_FOUND)
                 {
-                    getGuiContext().getView("login-dlg", ProgressDialog.class).dismiss();
                     getGuiContext().showToast("존재하지 않는 아이디입니다.");
                 }
-
+                getGuiContext().getView(getGuiContext().findString(R.string.login_dialog), ProgressDialog.class).dismiss();
             }
         };
     }

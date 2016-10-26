@@ -1,6 +1,11 @@
 package com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.get;
 
+import android.app.ProgressDialog;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.example.leehyungyu.bnwgameclient.R;
@@ -17,6 +22,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -31,6 +37,21 @@ public class GetRoomListService extends Service {
 
     public GetRoomListService(GuiContext gtx) {
         super(gtx);
+        final ProgressDialog pDlg = gtx.getView(gtx.findString(R.string.loadgin_dialog),ProgressDialog.class);
+        if(pDlg==null)
+        {
+            gtx.registView(gtx.findString(R.string.loadgin_dialog), ProgressDialog.show(gtx.getContext(), "", "새로운 방목록을 가져오고 있습니다.", true));
+        }
+        else if(pDlg.isShowing()==false)
+        {
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    pDlg.show();
+                }
+            },0);
+            gtx.registView(gtx.findString(R.string.loadgin_dialog), pDlg);
+        }
     }
 
     @Override
@@ -38,28 +59,49 @@ public class GetRoomListService extends Service {
         return new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                getGuiContext().showToast("Fail");
+                getGuiContext().showToast("서버와 통신이 원할하지 않습니다.");
+                Thread service = getGuiContext().getServiceManager().getService(R.string.refresher_service);
+                if(service!=null)
+                {
+                    service.interrupt();
+                }
+                getGuiContext().getView(getGuiContext().findString(R.string.loadgin_dialog), ProgressDialog.class).dismiss();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                JSONObject obj = parseJsonObject(response.body().string());
-                JSONArray roomsJson = (JSONArray)get(obj,"rooms");
-
-                getGuiContext().setListAdapter(R.id.roomList, new RoomListAdapter(getGuiContext().getContext(), roomsJson));
-                LocalServiceManager manager = getGuiContext().getServiceManager();
-                getGuiContext().getContext().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((TextView)getGuiContext().getView(R.id.recentRefreshTime)).setText(new SimpleDateFormat("HH:mm:ss").format(new Date(System.currentTimeMillis())));
-                    }
-                });
-                if(manager.getService("refresher")==null||!manager.getService("refresher").isAlive())
+                if(response.code()==200)
                 {
-                    Log.e("service", "새로고침 스레드 활성화");
-                    manager.registService("refresher", new Refresher(getGuiContext(), 15000));
-                    manager.getService("refresher").start();
+                    JSONObject obj = parseJsonObject(response.body().string());
+                    JSONArray roomsJson = (JSONArray)get(obj,"rooms");
+
+                    getGuiContext().setListAdapter(R.id.roomList, new RoomListAdapter(getGuiContext().getContext(), roomsJson));
+                    getGuiContext().setListItemClick(R.id.roomList, new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            getGuiContext().showToast("");
+                        }
+                    });
+
+                    LocalServiceManager manager = getGuiContext().getServiceManager();
+                    getGuiContext().getContext().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((TextView)getGuiContext().getView(R.id.recentRefreshTime)).setText(new SimpleDateFormat("HH:mm:ss", Locale.KOREA).format(new Date(System.currentTimeMillis())));
+                        }
+                    });
+                    if(manager.getService(R.string.refresher_service)==null||!manager.getService(R.string.refresher_service).isAlive())
+                    {
+                        Log.e("service", "새로고침 스레드 활성화");
+                        manager.registService(R.string.refresher_service, new Refresher(getGuiContext(), 15000));
+                        manager.getService(R.string.refresher_service).start();
+                    }
                 }
+                else
+                {
+                    getGuiContext().showToast("서버와 통신이 원할하지 않습니다.");
+                }
+                getGuiContext().getView(getGuiContext().findString(R.string.loadgin_dialog), ProgressDialog.class).dismiss();
             }
         };
     }

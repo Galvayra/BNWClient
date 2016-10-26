@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">BNWGameClient</string>
     <string name="link_for_register"><u>ID가 없으세요? 클릭하세요!</u></string>
+    <string name="login_dialog">login_dialog</string>
+    <string name="loadgin_dialog">loading_dialog</string>
+    <string name="refresher_service">rfservice</string>
 </resources>

@@ -3,6 +3,7 @@ package com.example.leehyungyu.bnwgameclient.view.gui;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -114,8 +115,21 @@ public class GuiContext {
         });
     }
 
+    public void setListItemClick(final int id, final AdapterView.OnItemClickListener listener) {
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getView(id, ListView.class).setOnItemClickListener(listener);
+            }
+        });
+    }
+
     public LocalServiceManager getServiceManager() {
         return serviceManager;
+    }
+
+    public String findString(int id) {
+        return context.getResources().getString(id);
     }
 
 }
