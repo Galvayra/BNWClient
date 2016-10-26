@@ -1,7 +1,9 @@
 package com.example.leehyungyu.bnwgameclient.service.login;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.widget.CheckBox;
 
 import com.example.leehyungyu.bnwgameclient.R;
@@ -32,6 +34,8 @@ public class LoginService extends Service {
 
     public LoginService(GuiContext gtx) {
         super(gtx);
+        ProgressDialog pDlg = ProgressDialog.show(gtx.getContext(), "", "로그인 중입니다.", true);
+        gtx.registView("login-dlg", pDlg);
     }
 
     @Override
@@ -47,16 +51,25 @@ public class LoginService extends Service {
     }
 
     @Override
-    protected Callback buildCallback(Object... param) {
+    protected Callback buildCallback() {
         return new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                getGuiContext().showToast("네트워크 연결이 원할하지 않습니다.");
+                final ProgressDialog pDlg = getGuiContext().getView("login-dlg", ProgressDialog.class);
+                if(pDlg!=null) {
+                    getGuiContext().getContext().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            pDlg.dismiss();
+                            getGuiContext().showToast("네트워크 연결이 원할하지 않습니다.");
+                        }
+                    });
+                }
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                JSONObject obj = JsonUtils.parseJsonObject(response.body().string());
+                final JSONObject obj = JsonUtils.parseJsonObject(response.body().string());
 
                 Login result = Login.valueOf(JsonUtils.get(obj,"result").toString());
                 if(result==Login.OK)
@@ -65,16 +78,25 @@ public class LoginService extends Service {
                     {
                         saveUserInstance(obj);
                     }
-                    getGuiContext().changeActivity(UserMainView.class, new Extras().addExtra("id", JsonUtils.get(obj,"id")));
+                    getGuiContext().getContext().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            getGuiContext().getView("login-dlg", ProgressDialog.class).dismiss();
+                            getGuiContext().changeActivity(UserMainView.class, new Extras().addExtra("id", JsonUtils.get(obj,"id")));
+                        }
+                    });
                 }
                 else if(result==Login.AUTH_FAIL)
                 {
+                    getGuiContext().getView("login-dlg", ProgressDialog.class).dismiss();
                     getGuiContext().showToast("비밀번호를 확인하세요.");
                 }
                 else if(result==Login.ID_NOT_FOUND)
                 {
+                    getGuiContext().getView("login-dlg", ProgressDialog.class).dismiss();
                     getGuiContext().showToast("존재하지 않는 아이디입니다.");
                 }
+
             }
         };
     }

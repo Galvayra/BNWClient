@@ -1,10 +1,8 @@
-package com.example.leehyungyu.bnwgameclient.service.MyPageService;
+package com.example.leehyungyu.bnwgameclient.service.mypageservice;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -45,12 +43,12 @@ public class MyPageService extends Service {
     protected Request buildRequest(Object... param) {
         JSONObject jo = new JsonBuilder().addKeys("id").addValues(param[0]).build();
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jo.toString());
-        Request request = new Request.Builder().post(body).url(ServerConfiguration.MYPAGE_VIEW_REQUEST).build();
+        Request request = new Request.Builder().post(body).url(ServerConfiguration.MYPAGE_VIEW_REQUEST+"/"+param[0]).build();
         return request;
     }
 
     @Override
-    protected Callback buildCallback(Object... param) {
+    protected Callback buildCallback() {
         return new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

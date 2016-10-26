@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.leehyungyu.bnwgameclient.service.background.LocalServiceManager;
 import com.example.leehyungyu.bnwgameclient.utils.Extras;
 
 import java.util.HashMap;
@@ -20,14 +23,17 @@ public class GuiContext {
 
     private Activity context;
 
-    private HashMap<String, View> views;
+    private HashMap<String, Object> views;
+
+    private LocalServiceManager serviceManager;
 
     public GuiContext(Activity context) {
         this.context = context;
         this.views = new HashMap<>();
+        serviceManager = new LocalServiceManager();
     }
 
-    public void registView(String key, View view) {
+    public void registView(String key, Object view) {
         views.put(key, view);
     }
 
@@ -97,6 +103,19 @@ public class GuiContext {
 
     public void click(int id, View.OnClickListener r) {
         context.findViewById(id).setOnClickListener(r);
+    }
+
+    public void setListAdapter(final int id, final ListAdapter adapter) {
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getView(id, ListView.class).setAdapter(adapter);
+            }
+        });
+    }
+
+    public LocalServiceManager getServiceManager() {
+        return serviceManager;
     }
 
 }

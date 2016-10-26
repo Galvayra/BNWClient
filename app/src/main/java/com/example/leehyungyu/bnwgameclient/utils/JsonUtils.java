@@ -1,5 +1,6 @@
 package com.example.leehyungyu.bnwgameclient.utils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,6 +63,20 @@ public class JsonUtils {
         }
 
         return value;
+    }
+
+    public static JSONObject get(JSONArray array, int idx) {
+        JSONObject obj = null;
+
+        try
+        {
+            obj = array.getJSONObject(idx);
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+        return obj;
     }
 
 }

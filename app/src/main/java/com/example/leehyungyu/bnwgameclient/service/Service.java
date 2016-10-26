@@ -12,7 +12,7 @@ import okhttp3.Request;
 public abstract class Service {
 
     protected abstract Request buildRequest(Object...param);
-    protected abstract Callback buildCallback(Object...param);
+    protected abstract Callback buildCallback();
     private GuiContext guiContext;
 
     public Service(GuiContext guiContext) {
@@ -33,13 +33,12 @@ public abstract class Service {
             public void run() {
                 Request request = buildRequest(param);
 
-                Callback callback = buildCallback(param);
+                Callback callback = buildCallback();
 
                 if(callback!=null)
                 {
                     SingletonHttpClient.getInstance().newCall(request).enqueue(callback);
                 }
-
             }
         }).start();
     }
