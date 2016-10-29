@@ -41,14 +41,14 @@
             android:text="시작하기"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/button5"
+            android:id="@+id/game_start_btn"
             android:layout_weight="1" />
 
         <Button
             android:text="준비하기"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/button4"
+            android:id="@+id/game_ready_btn"
             android:layout_weight="1" />
     </LinearLayout>
 
@@ -70,7 +70,9 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
             <EditText
                 android:layout_width="wrap_content"

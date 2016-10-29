@@ -53,6 +53,7 @@ public class CreateRoomService extends Service {
                 {
                     JSONObject jo = JsonUtils.parseJsonObject(json);
                     getGuiContext().changeActivity(InRoomView.class, new Extras()
+                            .addExtra("in-type","super")
                             .addExtra("creator", JsonUtils.get(jo,"creator"))
                             .addExtra("id", getServiceOwner())
                             .addExtra("roomTitle", JsonUtils.get(jo,"roomTitle"))

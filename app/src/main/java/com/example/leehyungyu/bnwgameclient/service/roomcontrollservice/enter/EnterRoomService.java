@@ -2,8 +2,11 @@ package com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.enter;
 
 import com.example.leehyungyu.bnwgameclient.service.ServerConfiguration;
 import com.example.leehyungyu.bnwgameclient.service.Service;
+import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.RoomDto;
+import com.example.leehyungyu.bnwgameclient.utils.Extras;
 import com.example.leehyungyu.bnwgameclient.utils.JsonBuilder;
 import com.example.leehyungyu.bnwgameclient.utils.JsonUtils;
+import com.example.leehyungyu.bnwgameclient.view.InRoomView;
 import com.example.leehyungyu.bnwgameclient.view.gui.GuiContext;
 
 import org.json.JSONObject;
@@ -39,7 +42,8 @@ public class EnterRoomService extends Service {
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.code()==200)
                 {
-                    JSONObject jo = JsonUtils.parseJsonObject(response.body().string());
+                    JSONObject oj = JsonUtils.parseJsonObject(response.body().string());
+                    getGuiContext().changeActivity(InRoomView.class, new Extras().addExtra("room-info", JsonUtils.mappingObject((JSONObject)JsonUtils.get(oj, "room"), RoomDto.class)).addExtra("in-type","non-super"));
                 }
                 else
                 {

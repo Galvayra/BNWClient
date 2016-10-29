@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.leehyungyu.bnwgameclient.service.background.LocalServiceManager;
 import com.example.leehyungyu.bnwgameclient.utils.Extras;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -67,7 +68,16 @@ public class GuiContext {
                     Set<String> keys = extras.getExtras().keySet();
                     for(String key : keys)
                     {
-                        intent.putExtra(key, extras.getExtras().get(key).toString());
+                        Object extraValue = extras.getExtras().get(key);
+                        if(extraValue instanceof String)
+                        {
+                            intent.putExtra(key, extraValue.toString());
+                        }
+                        else
+                        {
+                            intent.putExtra(key, (Serializable)extras.getExtras().get(key));
+                        }
+
                     }
                 }
 

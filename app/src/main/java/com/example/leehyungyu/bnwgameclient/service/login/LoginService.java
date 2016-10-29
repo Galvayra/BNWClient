@@ -32,6 +32,12 @@ import okhttp3.Response;
 
 public class LoginService extends Service {
 
+    public LoginService(GuiContext gtx) {
+        super(gtx);
+        ProgressDialog pDlg = ProgressDialog.show(gtx.getContext(), "", "로그인 중입니다.", true);
+        gtx.registView(gtx.findString(R.string.login_dialog), pDlg);
+    }
+
     public LoginService(GuiContext gtx, String serviceOwner) {
         super(gtx, serviceOwner);
         ProgressDialog pDlg = ProgressDialog.show(gtx.getContext(), "", "로그인 중입니다.", true);
@@ -40,7 +46,7 @@ public class LoginService extends Service {
 
     @Override
     protected Request buildRequest(Object... param) {
-
+        super.setServiceOwner(param[0].toString());
         JsonBuilder jb = new JsonBuilder().addKeys("id","password").addValues(param[0], param[1]);
         Request request = new Request.Builder().url(ServerConfiguration.LOGIN_REQUEST_URI).post(jsonRequestBody(jb.toJsonString())).build();
 
@@ -66,32 +72,39 @@ public class LoginService extends Service {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                final JSONObject obj = JsonUtils.parseJsonObject(response.body().string());
+                if(response.code()==200)
+                {
+                    final JSONObject obj = JsonUtils.parseJsonObject(response.body().string());
 
-                Login result = Login.valueOf(JsonUtils.get(obj,"result").toString());
-                if(result==Login.OK)
-                {
-                    if(getGuiContext().getView(R.id.auto_login_usable, CheckBox.class).isChecked())
+                    Login result = Login.valueOf(JsonUtils.get(obj,"result").toString());
+                    if(result==Login.OK)
                     {
-                        saveUserInstance(obj);
-                    }
-                    getGuiContext().getContext().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            getGuiContext().getView(getGuiContext().findString(R.string.login_dialog), ProgressDialog.class).dismiss();
-                            getGuiContext().changeActivity(UserMainView.class, new Extras().addExtra("id", JsonUtils.get(obj,"id")));
+                        if(getGuiContext().getView(R.id.auto_login_usable, CheckBox.class).isChecked())
+                        {
+                            saveUserInstance(obj);
                         }
-                    });
+                        getGuiContext().getContext().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                getGuiContext().getView(getGuiContext().findString(R.string.login_dialog), ProgressDialog.class).dismiss();
+                                getGuiContext().changeActivity(UserMainView.class, new Extras().addExtra("id", JsonUtils.get(obj,"id")));
+                            }
+                        });
+                    }
+                    else if(result==Login.AUTH_FAIL)
+                    {
+                        getGuiContext().showToast("비밀번호를 확인하세요.");
+                    }
+                    else if(result==Login.ID_NOT_FOUND)
+                    {
+                        getGuiContext().showToast("존재하지 않는 아이디입니다.");
+                    }
+                    getGuiContext().getView(getGuiContext().findString(R.string.login_dialog), ProgressDialog.class).dismiss();
                 }
-                else if(result==Login.AUTH_FAIL)
+                else
                 {
-                    getGuiContext().showToast("비밀번호를 확인하세요.");
+                    getGuiContext().showToast("서버와 통신이 원할하지 않습니다.");
                 }
-                else if(result==Login.ID_NOT_FOUND)
-                {
-                    getGuiContext().showToast("존재하지 않는 아이디입니다.");
-                }
-                getGuiContext().getView(getGuiContext().findString(R.string.login_dialog), ProgressDialog.class).dismiss();
             }
         };
     }

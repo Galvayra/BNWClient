@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.example.leehyungyu.bnwgameclient.R;
@@ -30,14 +31,14 @@ public class MainView extends AppCompatActivity {
     }
 
     public void guiInit() {
-        final String id = gtx.getTextFromView(R.id.idField);
         gtx.click(R.id.loginBtn, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final LoginService loginService = new LoginService(gtx, id);
+                final LoginService loginService = new LoginService(gtx);;
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        String id = gtx.getTextFromView(R.id.idField);
                         String password = gtx.getTextFromView(R.id.pwField);
                         loginService.runOnBackground(id, password);
                     }

@@ -19,6 +19,10 @@ public abstract class Service {
     private GuiContext guiContext;
     private String serviceOwner;
 
+    public Service(GuiContext guiContext) {
+        this.guiContext = guiContext;
+    }
+
     public Service(GuiContext guiContext, String serviceOwner) {
         this.guiContext = guiContext;
         this.serviceOwner = serviceOwner;
@@ -26,6 +30,10 @@ public abstract class Service {
 
     public void setGuiContext(GuiContext guiContext) {
         this.guiContext = guiContext;
+    }
+
+    public void setServiceOwner(String serviceOwner) {
+        this.serviceOwner = serviceOwner;
     }
 
     public GuiContext getGuiContext() {

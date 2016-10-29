@@ -1,5 +1,7 @@
 package com.example.leehyungyu.bnwgameclient.utils;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +23,7 @@ public class JsonUtils {
         for(Iterator<String> i = obj.keys(); i.hasNext();)
         {
             String key = i.next();
+            Log.e("jsonutil-obj-mapping", key);
             try
             {
                 setField(t, key, obj.get(key));
