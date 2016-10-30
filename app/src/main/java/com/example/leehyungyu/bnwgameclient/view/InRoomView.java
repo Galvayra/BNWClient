@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import com.example.leehyungyu.bnwgameclient.R;
 
 import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.RoomControllClient;
 import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.RoomDto;
+import com.example.leehyungyu.bnwgameclient.utils.Extras;
 import com.example.leehyungyu.bnwgameclient.view.gui.GuiContext;
 
 /**
@@ -64,9 +66,9 @@ public class InRoomView extends AppCompatActivity {
                         .setPositiveButton("나가기", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
+                            rcc.outOfRoom();
                         }
-                        }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                        }).setNegativeButton("취소", new DialogInterface.OnClickListener(){
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
@@ -81,6 +83,7 @@ public class InRoomView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 rcc.sendMessage(gtx.getTextFromView(R.id.msg_area));
+                gtx.getView(R.id.msg_area, EditText.class).setText("");
             }
         });
 
@@ -98,7 +101,7 @@ public class InRoomView extends AppCompatActivity {
 
         String[] me = {creator};
         participantList.setAdapter(new ArrayAdapter(this, android.R.layout.simple_expandable_list_item_1, me));
-
+        gtx.getView(R.id.game_ready_btn, Button.class).setVisibility(Button.INVISIBLE);
         gtx.click(R.id.game_start_btn, new View.OnClickListener() {
             @Override
             public void onClick(View v) {

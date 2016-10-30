@@ -37,4 +37,32 @@ public class SuperResponseBundle {
         //gtx.getView(R.id.participant_list, ListView.class).getAdapter().notify();
     }
 
+    public void notifyParticipantReady(JSONObject obj) {
+        String result = JsonUtils.get(obj, "result").toString();
+        final String notifyString;
+
+        if(result.equals("ready"))
+        {
+            notifyString = "[ SYSTEM ] 플레이어가 준비 완료했습니다. 게임을 시작할 수 있습니다.";
+        }
+        else
+        {
+            notifyString = "[ SYSTEM ] 플레이어 준비 취소";
+        }
+        gtx.getContext().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                gtx.appendText(R.id.chat_area, notifyString);
+            }
+        });
+    }
+
+    public void notifyParticipantOut() {
+        gtx.getContext().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                gtx.appendText(R.id.chat_area, "플레이어가 퇴장했습니다.");
+            }
+        });
+    }
 }
