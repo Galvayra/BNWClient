@@ -142,4 +142,13 @@ public class GuiContext {
         return context.getResources().getString(id);
     }
 
+    public void appendText(final int id, final String text) {
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getView(id, TextView.class).append(text+"\n");
+            }
+        });
+    }
+
 }
