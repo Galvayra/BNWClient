@@ -4,22 +4,19 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.leehyungyu.bnwgameclient.R;
-import static com.example.leehyungyu.bnwgameclient.utils.JsonUtils.*;
 
 import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.RoomControllClient;
 import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.RoomDto;
 import com.example.leehyungyu.bnwgameclient.view.gui.GuiContext;
-
-import org.json.JSONObject;
 
 /**
  * Created by leehyungyu on 2016-10-26.
@@ -77,7 +74,7 @@ public class InRoomView extends AppCompatActivity {
                         }).show();
             }
         });
-        rcc = new RoomControllClient(no, inType, gtx);
+        rcc = new RoomControllClient(no, inType, gtx, id);
         rcc.runClient();
 
         gtx.click(R.id.send_msg_btn, new View.OnClickListener() {
@@ -86,6 +83,11 @@ public class InRoomView extends AppCompatActivity {
                 rcc.sendMessage(gtx.getTextFromView(R.id.msg_area));
             }
         });
+
+        TextView chat_area = gtx.getView(R.id.chat_area, TextView.class);
+        chat_area.setMovementMethod(new ScrollingMovementMethod());
+        chat_area.setHorizontallyScrolling(false);
+        chat_area.setVerticalScrollBarEnabled(true);
     }
 
     public void initSuperUser() {
@@ -100,7 +102,7 @@ public class InRoomView extends AppCompatActivity {
         gtx.click(R.id.game_start_btn, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("g","ㅋㄹㄹ");
+                rcc.gameStart();
             }
         });
 
@@ -120,7 +122,15 @@ public class InRoomView extends AppCompatActivity {
         gtx.click(R.id.game_ready_btn, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Button b = (Button)v;
+                if(b.getText().equals("준비하기"))
+                {
+                    rcc.ready();
+                }
+                else
+                {
+                    rcc.readyCancel();
+                }
             }
         });
     }

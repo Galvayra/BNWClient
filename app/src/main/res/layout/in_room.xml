@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <LinearLayout
         android:orientation="horizontal"
+        android:id="@+id/in_room_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        >
 
         <TextView
             android:text="방제목 출력"
@@ -29,14 +32,17 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="4"
+        android:layout_below="@+id/in_room_title"
+        android:layout_above="@+id/in_room_buttons"
         android:id="@+id/participant_list"
         android:background="@color/colorPrimary"/>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/in_room_buttons"
+        android:layout_above="@+id/chat_area">
 
         <Button
             android:text="시작하기"
@@ -53,44 +59,30 @@
             android:layout_weight="1" />
     </LinearLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
+    <TextView
         android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:maxHeight="250dp"
+        android:lineSpacingExtra="3dp"
+        android:layout_above="@+id/msg_area"
+        android:scrollHorizontally="false"
+        android:id="@+id/chat_area" />
+
+    <EditText
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="3">
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="3">
+        android:inputType="textPersonName"
+        android:layout_alignParentBottom="true"
+        android:text="Name"
+        android:ems="10"
+        android:id="@+id/msg_area" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                android:id="@+id/chat_area" />
-        </ScrollView>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusable="true"
-            android:focusableInTouchMode="true">
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:text="Name"
-                android:ems="10"
-                android:id="@+id/msg_area"
-                android:layout_weight="9" />
-
-            <Button
-                android:text="전송"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/send_msg_btn"/>
-        </LinearLayout>
-    </LinearLayout>
-</LinearLayout>
+    <Button
+        android:text="전송"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/send_msg_btn"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>

@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.example.leehyungyu.bnwgameclient.R;
 import com.example.leehyungyu.bnwgameclient.service.ServerConfiguration;
+import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.get.ParticipantResponseBundle;
+import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.get.SuperResponseBundle;
 import com.example.leehyungyu.bnwgameclient.utils.JsonBuilder;
 import com.example.leehyungyu.bnwgameclient.utils.JsonUtils;
 import com.example.leehyungyu.bnwgameclient.view.gui.GuiContext;
@@ -35,16 +37,22 @@ public class RoomControllClient implements WebSocketListener {
     private OkHttpClient ws;
     private int room_no;
     private String inType;
-
+    private String id;
     private WebSocket wss;
 
     private GuiContext gtx;
 
-    public RoomControllClient(int romm_no, String inType, GuiContext gtx) {
+    private SuperResponseBundle superResponseBundle;
+    private ParticipantResponseBundle participantResponseBundle;
+
+    public RoomControllClient(int romm_no, String inType, GuiContext gtx, String id) {
         this.room_no = romm_no;
         this.inType = inType;
-        ws = new OkHttpClient.Builder().connectTimeout(0, TimeUnit.MILLISECONDS).readTimeout(0, TimeUnit.MILLISECONDS).writeTimeout(0, TimeUnit.MILLISECONDS).build();
+        this.id = id;
         this.gtx = gtx;
+        ws = new OkHttpClient.Builder().connectTimeout(0, TimeUnit.MILLISECONDS).readTimeout(0, TimeUnit.MILLISECONDS).writeTimeout(0, TimeUnit.MILLISECONDS).build();
+        superResponseBundle = new SuperResponseBundle(gtx);
+        participantResponseBundle = new ParticipantResponseBundle(gtx);
     }
 
     public void runClient() {
@@ -79,8 +87,21 @@ public class RoomControllClient implements WebSocketListener {
         String type = JsonUtils.get(obj, "type").toString();
         if(type.equals("chat"))
         {
-            gtx.appendText(R.id.chat_area, JsonUtils.get(obj, "msg").toString());
+            gtx.appendText(R.id.chat_area, JsonUtils.get(obj,"speaker")+" : "+JsonUtils.get(obj, "msg").toString());
         }
+        else if(type.equals("game_start_operation"))
+        {
+            superResponseBundle.startResponse(obj);
+        }
+        else if(type.equals("ready_result"))
+        {
+            participantResponseBundle.readyResponse(obj);
+        }
+        else if(type.equals("notify_new_participant"))
+        {
+            superResponseBundle.notifyParticipantEnter(obj);
+        }
+
     }
 
     @Override
@@ -95,12 +116,22 @@ public class RoomControllClient implements WebSocketListener {
     }
 
     public void sendMessage(final String message) {
+        JSONObject messageRequest = new JsonBuilder().addKeys("type", "room_no","msg","id").addValues("chat", room_no, message, id).build();
+        sendJsonRequest(messageRequest);
+    }
+
+    public void gameStart() {
+        JSONObject gameStartRequest = new JsonBuilder().addKeys("type","room_no").addValues("game_start", room_no).build();
+        sendJsonRequest(gameStartRequest);
+    }
+
+    public void sendJsonRequest(final JSONObject requestJson) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try
                 {
-                    wss.sendMessage(RequestBody.create(WebSocket.TEXT, new JsonBuilder().addKeys("type", "room_no","msg").addValues("chat", room_no, message).toJsonString()));
+                    wss.sendMessage(RequestBody.create(WebSocket.TEXT, requestJson.toString()));
                 }
                 catch(IOException e)
                 {
@@ -110,4 +141,13 @@ public class RoomControllClient implements WebSocketListener {
         }).start();
     }
 
+    public void ready() {
+        JSONObject readyRequest = new JsonBuilder().addKeys("type", "room_no").addValues("participant_ready", room_no).build();
+        sendJsonRequest(readyRequest);
+    }
+
+    public void readyCancel() {
+        JSONObject readyRequest = new JsonBuilder().addKeys("type", "room_no").addValues("participant_ready_cancel", room_no).build();
+        sendJsonRequest(readyRequest);
+    }
 }
