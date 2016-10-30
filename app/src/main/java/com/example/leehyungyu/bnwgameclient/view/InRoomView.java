@@ -77,7 +77,7 @@ public class InRoomView extends AppCompatActivity {
                         }).show();
             }
         });
-        rcc = new RoomControllClient(no, inType, gtx);
+        rcc = new RoomControllClient(no, inType, gtx, id);
         rcc.runClient();
 
         gtx.click(R.id.send_msg_btn, new View.OnClickListener() {
@@ -100,7 +100,7 @@ public class InRoomView extends AppCompatActivity {
         gtx.click(R.id.game_start_btn, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("g","ㅋㄹㄹ");
+
             }
         });
 

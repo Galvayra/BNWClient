@@ -35,14 +35,15 @@ public class RoomControllClient implements WebSocketListener {
     private OkHttpClient ws;
     private int room_no;
     private String inType;
-
+    private String id;
     private WebSocket wss;
 
     private GuiContext gtx;
 
-    public RoomControllClient(int romm_no, String inType, GuiContext gtx) {
+    public RoomControllClient(int romm_no, String inType, GuiContext gtx, String id) {
         this.room_no = romm_no;
         this.inType = inType;
+        this.id = id;
         ws = new OkHttpClient.Builder().connectTimeout(0, TimeUnit.MILLISECONDS).readTimeout(0, TimeUnit.MILLISECONDS).writeTimeout(0, TimeUnit.MILLISECONDS).build();
         this.gtx = gtx;
     }
@@ -79,7 +80,7 @@ public class RoomControllClient implements WebSocketListener {
         String type = JsonUtils.get(obj, "type").toString();
         if(type.equals("chat"))
         {
-            gtx.appendText(R.id.chat_area, JsonUtils.get(obj, "msg").toString());
+            gtx.appendText(R.id.chat_area, JsonUtils.get(obj,"speaker")+" : "+JsonUtils.get(obj, "msg").toString());
         }
     }
 
@@ -100,7 +101,7 @@ public class RoomControllClient implements WebSocketListener {
             public void run() {
                 try
                 {
-                    wss.sendMessage(RequestBody.create(WebSocket.TEXT, new JsonBuilder().addKeys("type", "room_no","msg").addValues("chat", room_no, message).toJsonString()));
+                    wss.sendMessage(RequestBody.create(WebSocket.TEXT, new JsonBuilder().addKeys("type", "room_no","msg","id").addValues("chat", room_no, message, id).toJsonString()));
                 }
                 catch(IOException e)
                 {
