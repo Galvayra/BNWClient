@@ -5,9 +5,15 @@ import android.util.Log;
 
 import com.example.leehyungyu.bnwgameclient.service.ServerConfiguration;
 import com.example.leehyungyu.bnwgameclient.utils.JsonBuilder;
+import com.example.leehyungyu.bnwgameclient.utils.JsonUtils;
 import com.example.leehyungyu.bnwgameclient.view.gui.GuiContext;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -36,7 +42,7 @@ public class RoomControllClient implements WebSocketListener {
     public RoomControllClient(int romm_no, String inType, GuiContext gtx) {
         this.room_no = romm_no;
         this.inType = inType;
-        ws = new OkHttpClient();
+        ws = new OkHttpClient.Builder().connectTimeout(0, TimeUnit.MILLISECONDS).readTimeout(0, TimeUnit.MILLISECONDS).writeTimeout(0, TimeUnit.MILLISECONDS).build();
         this.gtx = gtx;
     }
 
@@ -58,7 +64,7 @@ public class RoomControllClient implements WebSocketListener {
         this.wss = webSocket;
         try
         {
-            webSocket.sendMessage(RequestBody.create(WebSocket.TEXT, new JsonBuilder().addKeys("type", "room_no","in-type").addValues("enter", room_no, inType).toJsonString()));
+            wss.sendMessage(RequestBody.create(WebSocket.TEXT, new JsonBuilder().addKeys("type", "room_no","in-type").addValues("enter", room_no, inType).toJsonString()));
         }
         catch(IOException e)
         {
@@ -69,7 +75,13 @@ public class RoomControllClient implements WebSocketListener {
     @Override
     public void onMessage(ResponseBody message) throws IOException {
         Log.e("ws", "메세제"+message.string());
-        message.close();
+        JSONObject obj = JsonUtils.parseJsonObject(message.string());
+        String type = JsonUtils.get(obj, "type").toString();
+        if(type.equals("chat"))
+        {
+
+        }
+
     }
 
     @Override
@@ -79,6 +91,7 @@ public class RoomControllClient implements WebSocketListener {
 
     @Override
     public void onFailure(IOException e, Response response) {
+        e.printStackTrace();
         Log.e("ws", "실패");
     }
 
