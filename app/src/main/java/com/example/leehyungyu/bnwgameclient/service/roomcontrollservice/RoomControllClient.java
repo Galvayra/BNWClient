@@ -3,6 +3,7 @@ package com.example.leehyungyu.bnwgameclient.service.roomcontrollservice;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.leehyungyu.bnwgameclient.R;
 import com.example.leehyungyu.bnwgameclient.service.ServerConfiguration;
 import com.example.leehyungyu.bnwgameclient.utils.JsonBuilder;
 import com.example.leehyungyu.bnwgameclient.utils.JsonUtils;
@@ -50,7 +51,6 @@ public class RoomControllClient implements WebSocketListener {
         Request request = new Request.Builder().url(ServerConfiguration.ROOM_CONTROLL_SERVER).build();
         WebSocketCall wsCall = WebSocketCall.create(ws, request);
         wsCall.enqueue(this);
-
     }
 
     @Override
@@ -74,14 +74,13 @@ public class RoomControllClient implements WebSocketListener {
 
     @Override
     public void onMessage(ResponseBody message) throws IOException {
-        Log.e("ws", "메세제"+message.string());
+        Log.e("ws", "메세지 수신");
         JSONObject obj = JsonUtils.parseJsonObject(message.string());
         String type = JsonUtils.get(obj, "type").toString();
         if(type.equals("chat"))
         {
-
+            gtx.appendText(R.id.chat_area, JsonUtils.get(obj, "msg").toString());
         }
-
     }
 
     @Override
