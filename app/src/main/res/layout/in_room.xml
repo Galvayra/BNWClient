@@ -80,14 +80,14 @@
                 android:inputType="textPersonName"
                 android:text="Name"
                 android:ems="10"
-                android:id="@+id/editText2"
+                android:id="@+id/msg_area"
                 android:layout_weight="9" />
 
             <Button
                 android:text="전송"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/button6"/>
+                android:id="@+id/send_msg_btn"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

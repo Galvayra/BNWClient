@@ -35,6 +35,8 @@ public class InRoomView extends AppCompatActivity {
 
     private ListView participantList;
 
+    private RoomControllClient rcc;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +76,15 @@ public class InRoomView extends AppCompatActivity {
                         }).show();
             }
         });
-        new RoomControllClient().runClient();
+        rcc = new RoomControllClient(no, inType, gtx);
+        rcc.runClient();
+
+        gtx.click(R.id.send_msg_btn, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rcc.sendMessage(gtx.getTextFromView(R.id.msg_area));
+            }
+        });
     }
 
     public void initSuperUser() {
@@ -89,7 +99,7 @@ public class InRoomView extends AppCompatActivity {
         gtx.click(R.id.game_start_btn, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Log.e("g","ㅋㄹㄹ");
             }
         });
 
@@ -101,7 +111,7 @@ public class InRoomView extends AppCompatActivity {
         ((TextView)gtx.getView(R.id.roomTitle)).setText(dto.getRoom_title());
         creator = dto.getCreator();
         id = dto.getParticipant();
-
+        no = dto.getRoom_no();
         String[] parti = {creator, id};
 
         participantList.setAdapter(new ArrayAdapter(this, android.R.layout.simple_expandable_list_item_1, parti));
