@@ -70,4 +70,17 @@ public class ParticipantListItemData implements Serializable {
     public void setReady(boolean isReady) {
         this.isReady = isReady;
     }
+
+    @Override
+    public String toString() {
+        return "ParticipantListItemData{" +
+                "id='" + id + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", win=" + win +
+                ", draw=" + draw +
+                ", lose=" + lose +
+                ", winRate=" + winRate +
+                ", isReady=" + isReady +
+                '}';
+    }
 }

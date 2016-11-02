@@ -148,4 +148,10 @@ public class InRoomView extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
     }
+
+    @Override
+    public void onBackPressed() {
+        gtx.showToast("방을 나가시려면 나가기 버튼을 클릭해주세요.");
+    }
+
 }
