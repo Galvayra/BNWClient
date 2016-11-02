@@ -38,6 +38,19 @@ public class JsonUtils {
         return t;
     }
 
+    public static JSONArray parseJsonArray(String str) {
+        JSONArray arr = null;
+        try
+        {
+            arr = new JSONArray(str);
+        }
+        catch(JSONException e)
+        {
+            return null;
+        }
+        return arr;
+    }
+
     public static JSONObject parseJsonObject(String str) {
         JSONObject obj = null;
         try

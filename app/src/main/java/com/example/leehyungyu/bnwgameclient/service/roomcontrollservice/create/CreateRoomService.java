@@ -57,7 +57,9 @@ public class CreateRoomService extends Service {
                             .addExtra("creator", JsonUtils.get(jo,"creator"))
                             .addExtra("id", getServiceOwner())
                             .addExtra("roomTitle", JsonUtils.get(jo,"roomTitle"))
-                            .addExtra("roomNo", JsonUtils.get(jo,"roomNo")+""));
+                            .addExtra("roomNo", JsonUtils.get(jo,"roomNo")+"")
+                            .addExtra("vo", JsonUtils.get(jo,"vo").toString()));
+
 
                 }
                 else

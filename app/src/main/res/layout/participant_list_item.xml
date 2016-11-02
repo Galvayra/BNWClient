@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp">
+
+    <TextView
+        android:text="nickname"
+        android:textColor="#212121"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/nickname"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_width="75dp" />
+
+    <TextView
+        android:text="준비상태"
+        android:layout_height="match_parent"
+        android:id="@+id/ready"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_width="60dp" />
+
+    <TextView
+        android:text="승"
+        android:textColor="#00aaff"
+        android:layout_height="match_parent"
+        android:id="@+id/win"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/nickname"
+        android:layout_toEndOf="@+id/nickname"
+        android:layout_width="60dp" />
+
+    <TextView
+        android:text="무"
+        android:textColor="#212121"
+        android:layout_height="match_parent"
+        android:id="@+id/draw"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/win"
+        android:layout_toEndOf="@+id/win"
+        android:layout_width="60dp" />
+
+    <TextView
+        android:text="패"
+        android:textColor="#ff2233"
+        android:layout_height="match_parent"
+        android:id="@+id/lose"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/draw"
+        android:layout_toEndOf="@+id/draw"
+        android:layout_width="60dp" />
+
+    <TextView
+        android:text="승률"
+        android:textColor="#212121"
+        android:layout_height="match_parent"
+        android:id="@+id/rate"
+        android:layout_width="70dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/lose"
+        android:layout_toEndOf="@+id/lose" />
+</RelativeLayout>

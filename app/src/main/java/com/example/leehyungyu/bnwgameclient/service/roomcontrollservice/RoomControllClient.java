@@ -2,15 +2,19 @@ package com.example.leehyungyu.bnwgameclient.service.roomcontrollservice;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.example.leehyungyu.bnwgameclient.R;
 import com.example.leehyungyu.bnwgameclient.service.ServerConfiguration;
 import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.get.ParticipantResponseBundle;
 import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.get.SuperResponseBundle;
+import com.example.leehyungyu.bnwgameclient.utils.Extras;
 import com.example.leehyungyu.bnwgameclient.utils.JsonBuilder;
 import com.example.leehyungyu.bnwgameclient.utils.JsonUtils;
+import com.example.leehyungyu.bnwgameclient.view.UserMainView;
 import com.example.leehyungyu.bnwgameclient.view.gui.GuiContext;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -85,23 +89,55 @@ public class RoomControllClient implements WebSocketListener {
         Log.e("ws", "메세지 수신");
         JSONObject obj = JsonUtils.parseJsonObject(message.string());
         String type = JsonUtils.get(obj, "type").toString();
-        if(type.equals("chat"))
+        try
         {
-            gtx.appendText(R.id.chat_area, JsonUtils.get(obj,"speaker")+" : "+JsonUtils.get(obj, "msg").toString());
+            if(type.equals("chat"))
+            {
+                gtx.appendText(R.id.chat_area, "[ "+JsonUtils.get(obj,"speaker")+" ] "+JsonUtils.get(obj, "msg").toString());
+                scrollBottom(gtx.getView(R.id.chat_area, TextView.class));
+            }
+            else if(type.equals("game_start_operation"))
+            {
+                superResponseBundle.startResponse(obj);
+            }
+            else if(type.equals("ready_result"))
+            {
+                participantResponseBundle.readyResponse(obj);
+            }
+            else if(type.equals("notify_new_participant"))
+            {
+                superResponseBundle.notifyParticipantEnter(obj);
+            }
+            else if(type.equals("ready_notify"))
+            {
+                superResponseBundle.notifyParticipantReady(obj);
+            }
+            else if(type.equals("out!"))
+            {
+                wss.close(1000, "out");
+                gtx.changeActivity(UserMainView.class, new Extras().addExtra("id", id));
+            }
+            else if(type.equals("participant_out!"))
+            {
+                superResponseBundle.notifyParticipantOut();
+            }
         }
-        else if(type.equals("game_start_operation"))
+        catch(JSONException e)
         {
-            superResponseBundle.startResponse(obj);
-        }
-        else if(type.equals("ready_result"))
-        {
-            participantResponseBundle.readyResponse(obj);
-        }
-        else if(type.equals("notify_new_participant"))
-        {
-            superResponseBundle.notifyParticipantEnter(obj);
+            gtx.showToast("서버와 통신중에 문제가 발생했습니다.");
+            e.printStackTrace();
         }
 
+    }
+
+    private void scrollBottom(TextView textView) {
+        int lineTop =  textView.getLayout().getLineTop(textView.getLineCount()) ;
+        int scrollY = lineTop - textView.getHeight();
+        if (scrollY > 0) {
+            textView.scrollTo(0, scrollY);
+        } else {
+            textView.scrollTo(0, 0);
+        }
     }
 
     @Override
@@ -149,5 +185,10 @@ public class RoomControllClient implements WebSocketListener {
     public void readyCancel() {
         JSONObject readyRequest = new JsonBuilder().addKeys("type", "room_no").addValues("participant_ready_cancel", room_no).build();
         sendJsonRequest(readyRequest);
+    }
+
+    public void outOfRoom() {
+        JSONObject outRequest = new JsonBuilder().addKeys("type", "room_no", "in_type").addValues("out_of_room", room_no, inType).build();
+        sendJsonRequest(outRequest);
     }
 }

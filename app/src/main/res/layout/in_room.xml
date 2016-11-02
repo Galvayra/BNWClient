@@ -61,10 +61,11 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:maxHeight="250dp"
-        android:lineSpacingExtra="3dp"
+        android:layout_height="200dp"
+        android:maxHeight="200dp"
         android:layout_above="@+id/msg_area"
+        android:lineSpacingExtra="2dp"
+        android:scrollbars="vertical"
         android:scrollHorizontally="false"
         android:id="@+id/chat_area" />
 

@@ -43,7 +43,7 @@ public class EnterRoomService extends Service {
                 if(response.code()==200)
                 {
                     JSONObject oj = JsonUtils.parseJsonObject(response.body().string());
-                    getGuiContext().changeActivity(InRoomView.class, new Extras().addExtra("room-info", JsonUtils.mappingObject((JSONObject)JsonUtils.get(oj, "room"), RoomDto.class)).addExtra("in-type","non-super"));
+                    getGuiContext().changeActivity(InRoomView.class, new Extras().addExtra("room-info", JsonUtils.mappingObject((JSONObject)JsonUtils.get(oj, "room"), RoomDto.class)).addExtra("in-type","non-super").addExtra("vos", JsonUtils.get(oj,"vos").toString()));
                 }
                 else
                 {
