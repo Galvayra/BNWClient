@@ -6,7 +6,9 @@ import android.widget.ListView;
 import com.example.leehyungyu.bnwgameclient.R;
 import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.ParticipantListAdapter;
 import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.ParticipantListItemData;
+import com.example.leehyungyu.bnwgameclient.utils.Extras;
 import com.example.leehyungyu.bnwgameclient.utils.JsonUtils;
+import com.example.leehyungyu.bnwgameclient.view.GameView;
 import com.example.leehyungyu.bnwgameclient.view.gui.GuiContext;
 
 import org.json.JSONException;
@@ -28,7 +30,10 @@ public class SuperResponseBundle {
         boolean response = (boolean) JsonUtils.get(obj, "result");
         if(response)
         {
-            gtx.showToast("게임 시작 가능!");
+            ParticipantListItemData _super =(ParticipantListItemData)gtx.getView(R.id.participant_list, ListView.class).getAdapter().getItem(0);
+            ParticipantListItemData participant = (ParticipantListItemData)gtx.getView(R.id.participant_list, ListView.class).getAdapter().getItem(1);
+
+            gtx.changeActivity(GameView.class, new Extras().addExtra("super", _super).addExtra("non-super", participant).addExtra("in-type","super"));
         }
         else
         {
@@ -58,18 +63,24 @@ public class SuperResponseBundle {
         String result = JsonUtils.get(obj, "result").toString();
         final String notifyString;
 
+        final ParticipantListAdapter adapter = (ParticipantListAdapter)gtx.getView(R.id.participant_list, ListView.class).getAdapter();
+        ParticipantListItemData itemData = (ParticipantListItemData)adapter.getItem(1);
+
         if(result.equals("ready"))
         {
+            itemData.setReady(true);
             notifyString = "[ SYSTEM ] 플레이어가 준비 완료했습니다. 게임을 시작할 수 있습니다.";
         }
         else
         {
+            itemData.setReady(false);
             notifyString = "[ SYSTEM ] 플레이어 준비 취소";
         }
         gtx.getContext().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 gtx.appendText(R.id.chat_area, notifyString);
+                adapter.notifyDataSetChanged();
             }
         });
     }
