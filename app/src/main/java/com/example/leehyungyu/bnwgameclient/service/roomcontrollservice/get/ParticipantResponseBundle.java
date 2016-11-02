@@ -2,9 +2,13 @@ package com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.get;
 
 import android.graphics.Color;
 import android.widget.Button;
+import android.widget.ListView;
 
 import com.example.leehyungyu.bnwgameclient.R;
+import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.ParticipantListItemData;
+import com.example.leehyungyu.bnwgameclient.utils.Extras;
 import com.example.leehyungyu.bnwgameclient.utils.JsonUtils;
+import com.example.leehyungyu.bnwgameclient.view.GameView;
 import com.example.leehyungyu.bnwgameclient.view.gui.GuiContext;
 
 import org.json.JSONObject;
@@ -47,5 +51,11 @@ public class ParticipantResponseBundle {
         });
     }
 
+    public void startResponse(JSONObject obj) {
+        ParticipantListItemData _super =(ParticipantListItemData)gtx.getView(R.id.participant_list, ListView.class).getAdapter().getItem(0);
+        ParticipantListItemData participant = (ParticipantListItemData)gtx.getView(R.id.participant_list, ListView.class).getAdapter().getItem(1);
+
+        gtx.changeActivity(GameView.class, new Extras().addExtra("super", _super).addExtra("non-super", participant).addExtra("in-type","non-super"));
+    }
 
 }

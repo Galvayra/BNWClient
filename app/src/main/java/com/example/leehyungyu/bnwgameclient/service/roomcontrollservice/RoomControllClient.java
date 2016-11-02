@@ -18,8 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -49,7 +48,9 @@ public class RoomControllClient implements WebSocketListener {
     private SuperResponseBundle superResponseBundle;
     private ParticipantResponseBundle participantResponseBundle;
 
-    public RoomControllClient(int romm_no, String inType, GuiContext gtx, String id) {
+    private static RoomControllClient instance = null;
+
+    private RoomControllClient(int romm_no, String inType, GuiContext gtx, String id) {
         this.room_no = romm_no;
         this.inType = inType;
         this.id = id;
@@ -57,6 +58,10 @@ public class RoomControllClient implements WebSocketListener {
         ws = new OkHttpClient.Builder().connectTimeout(0, TimeUnit.MILLISECONDS).readTimeout(0, TimeUnit.MILLISECONDS).writeTimeout(0, TimeUnit.MILLISECONDS).build();
         superResponseBundle = new SuperResponseBundle(gtx);
         participantResponseBundle = new ParticipantResponseBundle(gtx);
+    }
+
+    public static void createInstance(int _romm_no, String _inType, GuiContext _gtx, String _id) {
+        instance = new RoomControllClient(_romm_no, _inType, _gtx, _id);
     }
 
     public void runClient() {
@@ -98,7 +103,14 @@ public class RoomControllClient implements WebSocketListener {
             }
             else if(type.equals("game_start_operation"))
             {
-                superResponseBundle.startResponse(obj);
+                if(inType.equals("super"))
+                {
+                    superResponseBundle.startResponse(obj);
+                }
+                else if(inType.equals("non-super"))
+                {
+                    participantResponseBundle.startResponse(obj);
+                }
             }
             else if(type.equals("ready_result"))
             {
@@ -133,9 +145,12 @@ public class RoomControllClient implements WebSocketListener {
     private void scrollBottom(TextView textView) {
         int lineTop =  textView.getLayout().getLineTop(textView.getLineCount()) ;
         int scrollY = lineTop - textView.getHeight();
-        if (scrollY > 0) {
+        if (scrollY > 0)
+        {
             textView.scrollTo(0, scrollY);
-        } else {
+        }
+        else
+        {
             textView.scrollTo(0, 0);
         }
     }
@@ -190,5 +205,9 @@ public class RoomControllClient implements WebSocketListener {
     public void outOfRoom() {
         JSONObject outRequest = new JsonBuilder().addKeys("type", "room_no", "in_type").addValues("out_of_room", room_no, inType).build();
         sendJsonRequest(outRequest);
+    }
+
+    public static RoomControllClient getInstance() {
+        return instance;
     }
 }

@@ -1,10 +1,12 @@
 package com.example.leehyungyu.bnwgameclient.service.roomcontrollservice;
 
+import java.io.Serializable;
+
 /**
  * Created by leehyungyu on 2016-11-02.
  */
 
-public class ParticipantListItemData {
+public class ParticipantListItemData implements Serializable {
     private String id;
     private String nickname;
     private int win;

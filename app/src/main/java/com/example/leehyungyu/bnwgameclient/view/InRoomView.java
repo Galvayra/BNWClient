@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -18,7 +17,6 @@ import com.example.leehyungyu.bnwgameclient.R;
 import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.ParticipantListAdapter;
 import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.RoomControllClient;
 import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.RoomDto;
-import com.example.leehyungyu.bnwgameclient.utils.Extras;
 import com.example.leehyungyu.bnwgameclient.utils.JsonUtils;
 import com.example.leehyungyu.bnwgameclient.view.gui.GuiContext;
 
@@ -62,26 +60,28 @@ public class InRoomView extends AppCompatActivity {
         }
         Log.e("inroom","나 : "+id+", 방장 : "+creator);
 
+        RoomControllClient.createInstance(no, inType, gtx, id);
+        rcc = RoomControllClient.getInstance();
+        rcc.runClient();
+
         gtx.click(R.id.outOfRoom, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new AlertDialog.Builder(gtx.getContext()).setTitle("")
                         .setMessage("방을 나가시겠습니까?")
                         .setPositiveButton("나가기", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            rcc.outOfRoom();
-                        }
-                        }).setNegativeButton("취소", new DialogInterface.OnClickListener(){
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                rcc.outOfRoom();
                             }
-                        }).show();
+                        }).setNegativeButton("취소", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
             }
         });
-        rcc = new RoomControllClient(no, inType, gtx, id);
-        rcc.runClient();
 
         gtx.click(R.id.send_msg_btn, new View.OnClickListener() {
             @Override
@@ -147,6 +147,5 @@ public class InRoomView extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // 방 종료 요청
     }
 }
