@@ -80,7 +80,19 @@ public class GetRoomListService extends Service {
                     getGuiContext().setListItemClick(R.id.roomList, new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            new EnterRoomService(getGuiContext(), getServiceOwner()).runOnBackground(((TextView)view.findViewById(R.id.room_no)).getText().toString());
+                            RoomItemData data = (RoomItemData)parent.getAdapter().getItem(position);
+                            if(data.getRoomState().equals("FULL"))
+                            {
+                                getGuiContext().showToast("현재 방이 가득찼습니다.");
+                            }
+                            else if(data.getRoomState().equals("ON_GAME"))
+                            {
+                                getGuiContext().showToast("현재 방이 게임중입니다.");
+                            }
+                            else
+                            {
+                                new EnterRoomService(getGuiContext(), getServiceOwner()).runOnBackground(((TextView)view.findViewById(R.id.room_no)).getText().toString());
+                            }
                         }
                     });
 

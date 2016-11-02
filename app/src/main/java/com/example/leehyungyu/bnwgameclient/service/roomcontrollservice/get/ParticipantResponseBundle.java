@@ -30,14 +30,18 @@ public class ParticipantResponseBundle {
 
         final String buttonFaceText;
         final int color;
+        final boolean ready;
+
 
         if(result.equals("ready"))
         {
+            ready = false;
             buttonFaceText = "준비취소";
             color = Color.RED;
         }
         else
         {
+            ready = true;
             buttonFaceText = "준비하기";
             color = Color.GREEN;
         }
@@ -47,6 +51,8 @@ public class ParticipantResponseBundle {
                 Button readyBtn = gtx.getView(R.id.game_ready_btn, Button.class);
                 readyBtn.setText(buttonFaceText);
                 readyBtn.setBackgroundColor(color);
+                ParticipantListItemData participant = (ParticipantListItemData)gtx.getView(R.id.participant_list, ListView.class).getAdapter().getItem(1);
+                participant.setReady(ready);
             }
         });
     }
@@ -54,7 +60,8 @@ public class ParticipantResponseBundle {
     public void startResponse(JSONObject obj) {
         ParticipantListItemData _super =(ParticipantListItemData)gtx.getView(R.id.participant_list, ListView.class).getAdapter().getItem(0);
         ParticipantListItemData participant = (ParticipantListItemData)gtx.getView(R.id.participant_list, ListView.class).getAdapter().getItem(1);
-
+        _super.setId(JsonUtils.get(obj, "creator").toString());
+        participant.setId(JsonUtils.get(obj,"participant").toString());
         gtx.changeActivity(GameView.class, new Extras().addExtra("super", _super).addExtra("non-super", participant).addExtra("in-type","non-super"));
     }
 
