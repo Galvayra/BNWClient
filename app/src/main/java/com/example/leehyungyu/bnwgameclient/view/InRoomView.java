@@ -15,10 +15,14 @@ import android.widget.TextView;
 
 import com.example.leehyungyu.bnwgameclient.R;
 
+import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.ParticipantListAdapter;
 import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.RoomControllClient;
 import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.RoomDto;
 import com.example.leehyungyu.bnwgameclient.utils.Extras;
+import com.example.leehyungyu.bnwgameclient.utils.JsonUtils;
 import com.example.leehyungyu.bnwgameclient.view.gui.GuiContext;
+
+import org.json.JSONArray;
 
 /**
  * Created by leehyungyu on 2016-10-26.
@@ -99,8 +103,9 @@ public class InRoomView extends AppCompatActivity {
         no = Integer.parseInt(getIntent().getStringExtra("roomNo"));
         ((TextView)gtx.getView(R.id.roomTitle)).setText(getIntent().getStringExtra("roomTitle"));
 
-        String[] me = {creator};
-        participantList.setAdapter(new ArrayAdapter(this, android.R.layout.simple_expandable_list_item_1, me));
+        JSONArray arr = new JSONArray();
+        arr.put(JsonUtils.parseJsonObject(gtx.getContext().getIntent().getStringExtra("vo")));
+        participantList.setAdapter(new ParticipantListAdapter(gtx, arr));
         gtx.getView(R.id.game_ready_btn, Button.class).setVisibility(Button.INVISIBLE);
         gtx.click(R.id.game_start_btn, new View.OnClickListener() {
             @Override
@@ -118,9 +123,9 @@ public class InRoomView extends AppCompatActivity {
         creator = dto.getCreator();
         id = dto.getParticipant();
         no = dto.getRoom_no();
-        String[] parti = {creator, id};
+        JSONArray arr = JsonUtils.parseJsonArray(gtx.getContext().getIntent().getStringExtra("vos"));
 
-        participantList.setAdapter(new ArrayAdapter(this, android.R.layout.simple_expandable_list_item_1, parti));
+        participantList.setAdapter(new ParticipantListAdapter(gtx, arr));
 
         gtx.click(R.id.game_ready_btn, new View.OnClickListener() {
             @Override

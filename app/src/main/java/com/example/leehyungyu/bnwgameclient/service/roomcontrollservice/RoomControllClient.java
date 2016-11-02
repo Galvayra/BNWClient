@@ -14,6 +14,7 @@ import com.example.leehyungyu.bnwgameclient.utils.JsonUtils;
 import com.example.leehyungyu.bnwgameclient.view.UserMainView;
 import com.example.leehyungyu.bnwgameclient.view.gui.GuiContext;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -88,35 +89,43 @@ public class RoomControllClient implements WebSocketListener {
         Log.e("ws", "메세지 수신");
         JSONObject obj = JsonUtils.parseJsonObject(message.string());
         String type = JsonUtils.get(obj, "type").toString();
-        if(type.equals("chat"))
+        try
         {
-            gtx.appendText(R.id.chat_area, "[ "+JsonUtils.get(obj,"speaker")+" ] "+JsonUtils.get(obj, "msg").toString());
-            scrollBottom(gtx.getView(R.id.chat_area, TextView.class));
+            if(type.equals("chat"))
+            {
+                gtx.appendText(R.id.chat_area, "[ "+JsonUtils.get(obj,"speaker")+" ] "+JsonUtils.get(obj, "msg").toString());
+                scrollBottom(gtx.getView(R.id.chat_area, TextView.class));
+            }
+            else if(type.equals("game_start_operation"))
+            {
+                superResponseBundle.startResponse(obj);
+            }
+            else if(type.equals("ready_result"))
+            {
+                participantResponseBundle.readyResponse(obj);
+            }
+            else if(type.equals("notify_new_participant"))
+            {
+                superResponseBundle.notifyParticipantEnter(obj);
+            }
+            else if(type.equals("ready_notify"))
+            {
+                superResponseBundle.notifyParticipantReady(obj);
+            }
+            else if(type.equals("out!"))
+            {
+                wss.close(1000, "out");
+                gtx.changeActivity(UserMainView.class, new Extras().addExtra("id", id));
+            }
+            else if(type.equals("participant_out!"))
+            {
+                superResponseBundle.notifyParticipantOut();
+            }
         }
-        else if(type.equals("game_start_operation"))
+        catch(JSONException e)
         {
-            superResponseBundle.startResponse(obj);
-        }
-        else if(type.equals("ready_result"))
-        {
-            participantResponseBundle.readyResponse(obj);
-        }
-        else if(type.equals("notify_new_participant"))
-        {
-            superResponseBundle.notifyParticipantEnter(obj);
-        }
-        else if(type.equals("ready_notify"))
-        {
-            superResponseBundle.notifyParticipantReady(obj);
-        }
-        else if(type.equals("out!"))
-        {
-            wss.close(1000, "out");
-            gtx.changeActivity(UserMainView.class, new Extras().addExtra("id", id));
-        }
-        else if(type.equals("participant_out!"))
-        {
-            superResponseBundle.notifyParticipantOut();
+            gtx.showToast("서버와 통신중에 문제가 발생했습니다.");
+            e.printStackTrace();
         }
 
     }

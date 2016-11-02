@@ -101,6 +101,8 @@ public class UserMainView extends AppCompatActivity {
                 dlgBuilder.show();
             }
         });
+        new GetRoomListService(gtx, userId).runOnBackground(userId);
+        gtx.show(R.id.contextView_second);
     }
 
     @Override

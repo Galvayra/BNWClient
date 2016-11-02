@@ -1,11 +1,15 @@
 package com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.get;
 
+import android.util.Log;
 import android.widget.ListView;
 
 import com.example.leehyungyu.bnwgameclient.R;
+import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.ParticipantListAdapter;
+import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.ParticipantListItemData;
 import com.example.leehyungyu.bnwgameclient.utils.JsonUtils;
 import com.example.leehyungyu.bnwgameclient.view.gui.GuiContext;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -32,9 +36,22 @@ public class SuperResponseBundle {
         }
     }
 
-    public void notifyParticipantEnter(JSONObject obj) {
-        gtx.showToast("새로운 유저 들어옴, 리스트에 추가하는 작업 해야함");
-        //gtx.getView(R.id.participant_list, ListView.class).getAdapter().notify();
+    public void notifyParticipantEnter(JSONObject obj) throws JSONException {
+        ParticipantListItemData data = new ParticipantListItemData();
+        Log.e("asdasd", obj.toString());
+        data.setNickname(JsonUtils.get(obj,"nickname").toString());
+        data.setWin((int)JsonUtils.get(obj,"win"));
+        data.setDraw((int)JsonUtils.get(obj,"draw"));
+        data.setLose((int)JsonUtils.get(obj,"lose"));
+        data.setWinRate(obj.getDouble("rate"));
+        data.setReady((boolean)JsonUtils.get(obj,"ready"));
+        ((ParticipantListAdapter)gtx.getView(R.id.participant_list, ListView.class).getAdapter()).addItem(data);
+        gtx.getContext().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ((ParticipantListAdapter)gtx.getView(R.id.participant_list, ListView.class).getAdapter()).notifyDataSetChanged();
+            }
+        });
     }
 
     public void notifyParticipantReady(JSONObject obj) {
@@ -58,9 +75,11 @@ public class SuperResponseBundle {
     }
 
     public void notifyParticipantOut() {
+        ((ParticipantListAdapter)gtx.getView(R.id.participant_list, ListView.class).getAdapter()).removeItem(1);
         gtx.getContext().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                ((ParticipantListAdapter)gtx.getView(R.id.participant_list, ListView.class).getAdapter()).notifyDataSetChanged();
                 gtx.appendText(R.id.chat_area, "플레이어가 퇴장했습니다.");
             }
         });
