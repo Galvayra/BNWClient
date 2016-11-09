@@ -1,6 +1,5 @@
 package com.example.leehyungyu.bnwgameclient.service.roomcontrollservice;
 
-import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -18,7 +17,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -38,7 +36,7 @@ import okio.Buffer;
 public class RoomControllClient implements WebSocketListener {
 
     private OkHttpClient ws;
-    private int room_no;
+    private int room_no, game_no;
     private String inType;
     private String id;
     private WebSocket wss;
@@ -126,12 +124,46 @@ public class RoomControllClient implements WebSocketListener {
             }
             else if(type.equals("out!"))
             {
+                Log.e("out-test", inType+"방을 나갑니다.");
                 wss.close(1000, "out");
                 gtx.changeActivity(UserMainView.class, new Extras().addExtra("id", id));
             }
             else if(type.equals("participant_out!"))
             {
                 superResponseBundle.notifyParticipantOut();
+            }
+            else if(type.equals("game_finish_out_win"))
+            {
+                if(inType.equals("super"))
+                {
+                    superResponseBundle.gameFinishWinResponse(id);
+                }
+                else if(inType.equals("non-super"))
+                {
+                    participantResponseBundle.gameFinishWinResponse(id);
+                }
+            }
+            else if(type.equals("game_finish_out_lose"))
+            {
+                if(inType.equals("super"))
+                {
+                    superResponseBundle.gameFinishLoseResponse(id);
+                }
+                else if(inType.equals("non-super"))
+                {
+                    participantResponseBundle.gameFinishLoseResponse(id);
+                }
+            }
+            else if(type.equals("notification_game_info"))
+            {
+                if(inType.equals("super"))
+                {
+                    superResponseBundle.notificationGameInfo(obj);
+                }
+                else if(inType.equals("non-super"))
+                {
+                    participantResponseBundle.notificationGameInfo(obj);
+                }
             }
         }
         catch(JSONException e)
@@ -164,6 +196,16 @@ public class RoomControllClient implements WebSocketListener {
     public void onFailure(IOException e, Response response) {
         e.printStackTrace();
         Log.e("ws", "실패");
+    }
+
+    public void setGameNumber(int gameNo) {
+        this.game_no = gameNo;
+    }
+
+    public void setGuiContext(GuiContext gtx) {
+        this.gtx = gtx;
+        superResponseBundle.setGuiContext(gtx);
+        participantResponseBundle.setGuiContext(gtx);
     }
 
     public void sendMessage(final String message) {
@@ -209,5 +251,15 @@ public class RoomControllClient implements WebSocketListener {
 
     public static RoomControllClient getInstance() {
         return instance;
+    }
+
+    public void forcedGameFinish(String inType) {
+        JSONObject outRequest = new JsonBuilder().addKeys("type", "room_no", "in_type", "game_no").addValues("forced_game_finish", room_no, inType, game_no).build();
+        sendJsonRequest(outRequest);
+    }
+
+    public void endMyTurn(int score) {
+        JSONObject outRequest = new JsonBuilder().addKeys("type", "room_no", "in_type", "game_no", "score").addValues("end_my_turn", room_no, inType, game_no, score).build();
+        sendJsonRequest(outRequest);
     }
 }

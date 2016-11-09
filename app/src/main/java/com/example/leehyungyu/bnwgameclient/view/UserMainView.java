@@ -114,4 +114,9 @@ public class UserMainView extends AppCompatActivity {
             service.interrupt();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+
+    }
 }

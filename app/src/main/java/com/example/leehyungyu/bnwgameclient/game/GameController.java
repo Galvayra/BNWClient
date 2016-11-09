@@ -13,5 +13,5 @@ import okio.Buffer;
  */
 
 public class GameController {
-
+    private int round;
 }
