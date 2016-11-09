@@ -41,7 +41,7 @@ public class NumberInputDialog extends Dialog {
         me = this;
         finish = (Button)findViewById(R.id.finish);
         cancel = (Button)findViewById(R.id.cancel);
-        clear = (Button)findViewById(R.id.clear);
+        clear = (Button) findViewById(R.id.clear);
         currentText = (TextView)findViewById(R.id.current_number_text);
 
         finish.setOnClickListener(new View.OnClickListener() {

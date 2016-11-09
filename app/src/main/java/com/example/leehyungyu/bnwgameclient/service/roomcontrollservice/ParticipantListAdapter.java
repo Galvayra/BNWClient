@@ -101,7 +101,7 @@ public class ParticipantListAdapter extends BaseAdapter {
         item.getWin().setText(itemData.getWin()+"승");
         item.getDraw().setText(itemData.getDraw()+"무");
         item.getLose().setText(itemData.getLose()+"패");
-        item.getRate().setText((Math.round(itemData.getWinRate()*100d)*100d)+"%");
+        item.getRate().setText(String.format("%.2f", itemData.getWinRate())+"%");
 
         if(itemData.isReady())
         {

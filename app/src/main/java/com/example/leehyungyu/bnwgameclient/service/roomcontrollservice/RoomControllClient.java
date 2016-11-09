@@ -10,6 +10,7 @@ import com.example.leehyungyu.bnwgameclient.service.roomcontrollservice.get.Supe
 import com.example.leehyungyu.bnwgameclient.utils.Extras;
 import com.example.leehyungyu.bnwgameclient.utils.JsonBuilder;
 import com.example.leehyungyu.bnwgameclient.utils.JsonUtils;
+import com.example.leehyungyu.bnwgameclient.view.NumberInputDialog;
 import com.example.leehyungyu.bnwgameclient.view.UserMainView;
 import com.example.leehyungyu.bnwgameclient.view.gui.GuiContext;
 
@@ -163,6 +164,38 @@ public class RoomControllClient implements WebSocketListener {
                 else if(inType.equals("non-super"))
                 {
                     participantResponseBundle.notificationGameInfo(obj);
+                }
+                if(gtx.getView("nid", NumberInputDialog.class)!=null)
+                {
+                    gtx.getContext().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            gtx.getView("nid", NumberInputDialog.class).cancel();
+                            gtx.registView("nid", null);
+                        }
+                    });
+                }
+            }
+            else if(type.equals("notification_not_invalid_number"))
+            {
+                if(inType.equals("super"))
+                {
+                    superResponseBundle.notificationNotInvalidNumber();
+                }
+                else if(inType.equals("non-super"))
+                {
+                    participantResponseBundle.notificationNotInvalidNumber();
+                }
+            }
+            else if(type.equals("game_finish_out_draw"))
+            {
+                if(inType.equals("super"))
+                {
+                    superResponseBundle.draw(id);
+                }
+                else if(inType.equals("non-super"))
+                {
+                    participantResponseBundle.draw(id);
                 }
             }
         }
