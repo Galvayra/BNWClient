@@ -55,6 +55,7 @@ public class GameView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 NumberInputDialog nid = new NumberInputDialog(gtx.getContext(), "숫자 입력", rcc);
+                gtx.registView("nid", nid);
                 nid.show();
             }
         });

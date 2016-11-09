@@ -38,7 +38,8 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="66dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:id="@+id/player_1_status_60"
                     android:background="@drawable/game_progress"
@@ -93,7 +94,8 @@
                 <TextView
                     android:layout_width="60dp"
                     android:layout_height="80dp"
-                    android:background="#000000"/>
+                    android:background="#000000"
+                    android:id="@+id/current_turn" />
             </LinearLayout>
 
 
@@ -119,7 +121,7 @@
                         android:id="@+id/player_1_status"
                         android:gravity="center|right"
                         android:textSize="30dp"
-                        android:text="1"/>
+                        android:text="0"/>
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -134,7 +136,7 @@
                         android:id="@+id/player_2_status"
                         android:gravity="center|left"
                         android:textSize="30dp"
-                        android:text="2"/>
+                        android:text="0"/>
 
                 </LinearLayout>
 
@@ -176,7 +178,8 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="66dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:id="@+id/player_2_status_60"
                     android:background="@drawable/game_progress"
