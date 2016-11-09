@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:layout_alignParentBottom="true"
-        android:text="Name"
+        android:text=""
         android:ems="10"
         android:id="@+id/msg_area" />
 

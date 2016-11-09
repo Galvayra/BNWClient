@@ -8,7 +8,7 @@ public class ServerConfiguration {
     public static final String HTTP = "http://";
     public static final String WS = "ws:";
 
-    public static final String HOST_WITHOUT_CONTEXT = "192.168.2.13:8080/";
+    public static final String HOST_WITHOUT_CONTEXT = "172.16.42.76:8080/";
     public static final String HOST = HOST_WITHOUT_CONTEXT+"bnwserver/";
 
     public static final String LOGIN_REQUEST_URI = HTTP+HOST+"mobile/login";

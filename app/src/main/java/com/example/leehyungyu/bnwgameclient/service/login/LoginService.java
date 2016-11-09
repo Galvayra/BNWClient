@@ -104,6 +104,16 @@ public class LoginService extends Service {
                 else
                 {
                     getGuiContext().showToast("서버와 통신이 원할하지 않습니다.");
+                    final ProgressDialog pDlg = getGuiContext().getView(getGuiContext().findString(R.string.login_dialog), ProgressDialog.class);
+                    if(pDlg!=null) {
+                        getGuiContext().getContext().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                pDlg.dismiss();
+                                getGuiContext().showToast("네트워크 연결이 원할하지 않습니다.");
+                            }
+                        });
+                    }
                 }
             }
         };

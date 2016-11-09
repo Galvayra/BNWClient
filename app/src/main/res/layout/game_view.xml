@@ -242,12 +242,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:padding="10dp">
+                    android:padding="10dp"
+                    android:id="@+id/player_1_img_box">
 
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/game_progress"
+                        android:background="@drawable/black_man"
                         android:id="@+id/player_1_image"/>
                 </LinearLayout>
                 <TextView
@@ -311,12 +312,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:padding="10dp">
+                    android:padding="10dp"
+                    android:id="@+id/player_2_img_box">
 
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/game_progress"
+                        android:background="@drawable/white_woman"
                         android:id="@+id/player_2_image"/>
 
                 </LinearLayout>
